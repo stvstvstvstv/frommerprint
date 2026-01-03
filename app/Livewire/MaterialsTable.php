@@ -24,6 +24,8 @@ class MaterialsTable extends Component
     public string $material_type = '';
     public int|string|null $unit_id = null;
     public bool $active = true;
+    public bool $showForm = false;
+    public ?int $deleteId = null;
 
     // Reset pagination when filters change
     public function updatedSearch()
@@ -72,6 +74,8 @@ class MaterialsTable extends Component
         $this->material_type = $material->material_type;
         $this->unit_id = $material->unit_id;
         $this->active = (bool) $material->active;
+
+        $this->showForm = true;
     }
 
     // Reset form state
@@ -83,12 +87,32 @@ class MaterialsTable extends Component
         $this->material_type = '';
         $this->unit_id = null;
         $this->active = true;
+
+        $this->showForm = false;
+    }
+
+    // Create
+    public function create()
+    {
+        $this->resetForm();
+        $this->showForm = true;
     }
 
     // Delete
     public function delete(int $id)
     {
         Material::findOrFail($id)->delete();
+    }
+
+    public function confirmDelete(int $id)
+    {
+        $this->deleteId = $id;
+    }
+
+    public function deleteConfirmed()
+    {
+        Material::findOrFail($this->deleteId)->delete();
+        $this->deleteId = null;
     }
 
     // Render table
@@ -105,7 +129,7 @@ class MaterialsTable extends Component
                 )
             )
             ->orderBy('code')
-            ->paginate(15);
+            ->paginate(10);
 
         return view('livewire.materials-table', [
             'materials' => $materials,
