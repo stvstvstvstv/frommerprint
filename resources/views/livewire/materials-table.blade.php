@@ -4,9 +4,9 @@
 @if ($deleteId)
     <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
         <div class="bg-white rounded shadow p-6 w-full max-w-sm">
-            <h3 class="font-semibold mb-3">Delete material?</h3>
+            <h3 class="font-semibold mb-3">{{ __('materials.confirm_delete_title') }}</h3>
             <p class="text-sm text-gray-600 mb-4">
-                This action cannot be undone.
+                {{ __('materials.confirm_delete_body') }}
             </p>
 
             <div class="flex justify-end gap-2">
@@ -75,7 +75,7 @@
                     wire:click="save"
                     class="bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                    {{ $editingId ? 'Update' : 'Save' }}
+                    {{ $editingId ? __('common.update') : __('common.save') }}
                 </button>
 
                 <button
@@ -83,7 +83,7 @@
                     wire:click="resetForm"
                     class="bg-gray-500 text-white px-4 py-2 rounded"
                 >
-                    Cancel
+                    {{ __('common.cancel') }}
                 </button>
             </div>
 
@@ -100,7 +100,7 @@
             <input
                 type="text"
                 wire:model.live.debounce.300ms="search"
-                placeholder="Search code or name…"
+                placeholder="{{ __('materials.search_placeholder') }}"
                 class="w-full max-w-sm rounded border-gray-300 text-sm"
             />
 
@@ -108,10 +108,10 @@
                 wire:model.live="type"
                 class="rounded border-gray-300 text-sm"
             >
-                <option value="">All types</option>
-                <option value="raw">Raw</option>
-                <option value="finished">Finished</option>
-                <option value="packaging">Packaging</option>
+                <option value="">{{ __('common.all') }}</option>
+                <option value="raw">{{ __('materials.types.raw') }}</option>
+                <option value="finished">{{ __('materials.types.finished') }}</option>
+                <option value="packaging">{{ __('materials.types.packaging') }}</option>
             </select>
         </div>
 
@@ -120,19 +120,19 @@
             wire:click="create"
             class="text-blue-600 hover:underline text-sm font-medium whitespace-nowrap"
         >
-            + Add Material
+            {{ __('materials.add') }}
         </button>
     </div>
 
     <table class="min-w-full border border-gray-200 rounded">
         <thead class="bg-gray-100 text-sm text-gray-700">
             <tr>
-                <th class="px-3 py-2 w-40 text-left">Code</th>
-                <th class="px-3 py-2 text-left">Name</th>
-                <th class="px-3 py-2 w-28 text-left">Type</th>
-                <th class="px-3 py-2 w-20 text-left">Unit</th>
-                <th class="px-3 py-2 w-20text-center">Active</th>
-                <th class="px-3 py-2 w-24 text-right">Actions</th>
+                <th class="px-3 py-2 w-40 text-left">{{ __('materials.fields.code') }}</th>
+                <th class="px-3 py-2 text-left">{{ __('materials.fields.name') }}</th>
+                <th class="px-3 py-2 w-28 text-left">{{ __('materials.fields.type') }}</th>
+                <th class="px-3 py-2 w-20 text-left">{{ __('materials.fields.unit') }}</th>
+                <th class="px-3 py-2 w-20text-center">{{ __('materials.fields.active') }}</th>
+                <th class="px-3 py-2 w-24 text-right">{{ __('common.actions') }}</th>
             </tr>
         </thead>
 
@@ -200,7 +200,7 @@
             @empty
                 <tr>
                     <td colspan="5" class="px-3 py-6 text-center text-gray-500">
-                        No materials found.
+                        {{ __('materials.empty') }}
                     </td>
                 </tr>
             @endforelse
