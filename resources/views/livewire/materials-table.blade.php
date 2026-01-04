@@ -1,5 +1,5 @@
 
-<div class="overflow-x-auto">
+<div class="overflow-x-auto p-4 bg-white rounded shadow">
 
 @if ($deleteId)
     <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -124,90 +124,179 @@
         </button>
     </div>
 
-    <table class="min-w-full border border-gray-200 rounded">
-        <thead class="bg-gray-100 text-sm text-gray-700">
-            <tr>
-                <th class="px-3 py-2 w-40 text-left">{{ __('materials.fields.code') }}</th>
-                <th class="px-3 py-2 text-left">{{ __('materials.fields.name') }}</th>
-                <th class="px-3 py-2 w-28 text-left">{{ __('materials.fields.type') }}</th>
-                <th class="px-3 py-2 w-20 text-left">{{ __('materials.fields.unit') }}</th>
-                <th class="px-3 py-2 w-20text-center">{{ __('materials.fields.active') }}</th>
-                <th class="px-3 py-2 w-24 text-right">{{ __('common.actions') }}</th>
-            </tr>
-        </thead>
+<div class="flex gap-6">
+    {{-- LEFT: table --}}
+    <div class="w-2/3">
+        <table class="min-w-full border border-gray-200 rounded">
+            <thead class="bg-gray-100 text-sm text-gray-700">
+                <tr>
+                    <th class="px-3 py-2 w-40 text-left">{{ __('materials.fields.code') }}</th>
+                    <th class="px-3 py-2 text-left">{{ __('materials.fields.name') }}</th>
+                    <th class="px-3 py-2 w-28 text-left">{{ __('materials.fields.type') }}</th>
+                    <th class="px-3 py-2 w-20 text-left">{{ __('materials.fields.unit') }}</th>
+                    <th class="px-3 py-2 w-20text-center">{{ __('materials.fields.active') }}</th>
+                    <th class="px-3 py-2 w-24 text-right">{{ __('common.actions') }}</th>
+                </tr>
+            </thead>
 
-        <tbody class="divide-y">
-            @forelse ($materials as $material)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-3 py-2">{{ $material->code }}</td>
-                    <td class="px-3 py-2">{{ $material->name }}</td>
-                    <td class="px-3 py-2">{{ $material->material_type }}</td>
-                    <td class="px-3 py-2">
-                        {{ $material->unit?->code ?? '—' }}
-                    </td>
-                    <td class="px-3 py-2 text-center">
-                        @if ($material->active)
-                            <span class="text-green-600 font-semibold">✓</span>
-                        @else
-                            <span class="text-gray-400">—</span>
-                        @endif
-                    </td>
-                    <td class="px-3 py-2 text-right">
-                        <div class="inline-flex items-center gap-1">
-                            {{-- Edit --}}
-                            <button
-                                wire:click="edit({{ $material->id }})"
-                                class="p-1.5 rounded text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                                title="Edit"
-                            >
-                                <!-- Edit (sharp pencil) -->
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    class="h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.75"
-                                    stroke-linecap="square"
-                                    stroke-linejoin="miter">
-                                    <path d="M4 20h4l10-10-4-4L4 16v4z"/>
-                                    <path d="M14 6l4 4"/>
-                                </svg>
+            <tbody class="divide-y">
+                @forelse ($materials as $material)
+                    <tr
+                        wire:key="material-{{ $material->id }}"
+                        wire:click="selectMaterial({{ $material->id }})"
+                        class="cursor-pointer hover:bg-gray-50
+                            {{ $selectedMaterialId === $material->id ? 'bg-gray-100' : '' }}"
+                    >
+                        <td class="px-3 py-2">{{ $material->code }}</td>
+                        <td class="px-3 py-2">{{ $material->name }}</td>
+                        <td class="px-3 py-2">{{ $material->material_type }}</td>
+                        <td class="px-3 py-2">
+                            {{ $material->unit?->code ?? '—' }}
+                        </td>
+                        <td class="px-3 py-2 text-center">
+                            @if ($material->active)
+                                <span class="text-green-600 font-semibold">✓</span>
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-2 text-right">
+                            <div class="inline-flex items-center gap-1">
+                                {{-- Edit --}}
+                                <button
+                                    wire:click="edit({{ $material->id }})"
+                                    class="p-1.5 rounded text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                                    title="Edit"
+                                >
+                                    <!-- Edit (sharp pencil) -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        class="h-4 w-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.75"
+                                        stroke-linecap="square"
+                                        stroke-linejoin="miter">
+                                        <path d="M4 20h4l10-10-4-4L4 16v4z"/>
+                                        <path d="M14 6l4 4"/>
+                                    </svg>
+                                </button>
+
+                                {{-- Delete --}}
+                                <button
+                                    wire:click="confirmDelete({{ $material->id }})"
+                                    class="p-1.5 rounded text-gray-500 hover:text-red-700 hover:bg-gray-100"
+                                    title="Delete"
+                                >
+                                    <!-- Delete (minimal trash) -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        class="h-4 w-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.75"
+                                        stroke-linecap="square"
+                                        stroke-linejoin="miter">
+                                        <path d="M3 6h18"/>
+                                        <path d="M8 6V4h8v2"/>
+                                        <path d="M6 6l1 14h10l1-14"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-3 py-6 text-center text-gray-500">
+                            {{ __('materials.empty') }}
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+        {{-- RIGHT: pricing panel --}}
+    <div class="w-1/3">
+        @if ($selectedMaterialId)
+            <div class="bg-white border rounded p-4">
+                <h3 class="font-semibold mb-4">
+                    Pricing
+                </h3>
+
+                {{-- READ-ONLY --}}
+                @if (! $editMode)
+                    <dl class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Price</dt>
+                            <dd>
+                                {{ $price !== null ? number_format($price, 2) : '—' }}
+                            </dd>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Currency</dt>
+                            <dd>{{ $currency }}</dd>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Pricing</dt>
+                            <dd>
+                                per {{ $pricingPer }}
+                                {{ optional($units->firstWhere('id', $pricingUnitId))->code ?? '—' }}
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <div class="mt-4 text-right">
+                        <button
+                            wire:click="$set('editMode', true)"
+                            class="text-blue-600"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                @endif
+
+                {{-- EDIT MODE --}}
+                @if ($editMode)
+                    <div class="space-y-3 text-sm">
+                        <input type="number" step="0.01" wire:model.defer="price" class="w-full border rounded px-2 py-1" />
+
+                        <select wire:model.defer="currency" class="w-full border rounded px-2 py-1">
+                            <option value="EUR">EUR</option>
+                            <option value="RON">RON</option>
+                        </select>
+
+                        <div class="flex gap-2">
+                            <input type="number" wire:model.defer="pricingPer" class="w-1/2 border rounded px-2 py-1" />
+
+                            <select wire:model.defer="pricingUnitId" class="w-1/2 border rounded px-2 py-1">
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->code }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button wire:click="cancelPricingEdit" class="text-gray-600">
+                                Cancel
                             </button>
-
-                            {{-- Delete --}}
-                            <button
-                                wire:click="confirmDelete({{ $material->id }})"
-                                class="p-1.5 rounded text-gray-500 hover:text-red-700 hover:bg-gray-100"
-                                title="Delete"
-                            >
-                                <!-- Delete (minimal trash) -->
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    class="h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.75"
-                                    stroke-linecap="square"
-                                    stroke-linejoin="miter">
-                                    <path d="M3 6h18"/>
-                                    <path d="M8 6V4h8v2"/>
-                                    <path d="M6 6l1 14h10l1-14"/>
-                                </svg>
+                            <button wire:click="savePricing" class="text-blue-600 font-semibold">
+                                Save
                             </button>
                         </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="px-3 py-6 text-center text-gray-500">
-                        {{ __('materials.empty') }}
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="mt-4">
-        {{ $materials->links() }}
+                    </div>
+                @endif
+            </div>
+        @else
+            <div class="text-gray-400 italic">
+                Select a material to view pricing
+            </div>
+        @endif
     </div>
 </div>
+
+<div class="mt-4">
+    {{ $materials->links() }}
+</div>
+

@@ -1,5 +1,7 @@
 <?php
 
+// TODO: prevent deleting or deactivating the current user
+
 namespace App\Livewire;
 
 use Livewire\Component;
@@ -8,6 +10,7 @@ use Livewire\Attributes\Layout;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 
@@ -100,5 +103,34 @@ class UsersTable extends Component
         );
 
         $this->resetForm();
+    }
+
+    // Delete
+    public function confirmDelete(): void
+    {
+        if ($this->isEditingSelf()) 
+        {
+            abort(403, 'You cannot delete your own account.');
+        }
+
+        $this->deleteId = $this->editingId;
+    }
+
+    public function deleteConfirmed(): void
+    {
+        if ($this->isEditingSelf()) {
+            abort(403, 'You cannot delete your own account.');
+        }
+
+        User::findOrFail($this->deleteId)->delete();
+
+        $this->deleteId = null;
+        $this->resetForm();
+        $this->resetPage();
+    }
+
+    public function isEditingSelf(): bool
+    {
+        return $this->editingId === Auth::id();
     }
 }

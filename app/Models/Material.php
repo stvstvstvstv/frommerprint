@@ -12,10 +12,19 @@ class Material extends Model
         'material_type',
         'unit_id',
         'active',
+        'price',
+        'currency',
+        'pricing_unit_id',
+        'pricing_per',
     ];
 
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function pricingUnit()
+    {
+        return $this->belongsTo(Unit::class, 'pricing_unit_id');
     }
 }

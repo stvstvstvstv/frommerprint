@@ -66,6 +66,17 @@
             >
                 {{ __('common.save') }}
             </button>
+                
+            {{-- Delete (only if NOT current user) --}}
+            @if (! $this->isEditingSelf())
+                <button
+                    wire:click="confirmDelete"
+                    type="button"
+                    class="text-red-600 px-4 py-2 rounded border border-gray-300"
+                >
+                    {{ __('common.delete') }}
+                </button>
+            @endif
 
             <button
                 wire:click="resetForm"
@@ -77,6 +88,28 @@
     </div>
 @endif
     
+@if ($deleteId)
+    <div class="mt-4 p-4 bg-red-50 border border-red-200 text-right">
+        <span class="mr-3 text-red-700">
+            {{ __('users.confirm_delete_user') }}
+        </span>
+
+        <button
+            wire:click="deleteConfirmed"
+            class="text-red-600 font-semibold mr-2 px-4 py-2 rounded border border-gray-300"
+        >
+            {{ __('common.delete') }}
+        </button>
+
+        <button
+            wire:click="$set('deleteId', null)"
+            class="text-gray-600 px-4 py-2 rounded border border-gray-300"
+        >
+            {{ __('common.cancel') }}
+        </button>
+    </div>
+@endif
+
     <div class="bg-white shadow rounded">
         <table class="min-w-full text-sm">
             <thead class="border-b">
@@ -91,7 +124,7 @@
             </thead>
             <tbody class="divide-y">
             @foreach ($users as $user)
-                <tr>
+                <tr wire:key="user-{{ $user->id }}">
                     <td class="p-2">{{ $user->name }}</td>
                     <td class="p-2">{{ $user->email }}</td>
                     <td class="p-2 uppercase">{{ $user->locale }}</td>
@@ -109,15 +142,7 @@
                             >
                                 {{ __('common.edit') }}
                             </button>
-
-                            {{-- DELETE --}}
-                            <button
-                                wire:click="confirmDelete({{ $user->id }})"
-                                class="text-gray-500 hover:text-red-700"
-                            >
-                                {{ __('common.delete') }}
-                            </button>
-                        </div>
+                       </div>
                     </td>
                 </tr>
             @endforeach

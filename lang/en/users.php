@@ -5,8 +5,7 @@ return [
 
     'add' => 'Add user',
     'edit' => 'Edit user',
-    'confirm_delete_title' => 'Delete user?',
-    'confirm_delete_body' => 'This action cannot be undone.',
+    'confirm_delete_user' => 'Delete user?  This action cannot be undone.',
 
         'fields' => [
         'name' => 'Name',
