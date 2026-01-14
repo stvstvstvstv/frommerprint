@@ -12,6 +12,11 @@ class ExchangeRate extends Model
         'rate_to_base',
     ];
 
+        protected $casts = [
+        'rate_date' => 'date',
+    ];
+
+
     public function currency()
     {
         return $this->belongsTo(Currency::class);

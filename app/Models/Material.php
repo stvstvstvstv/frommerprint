@@ -13,6 +13,7 @@ class Material extends Model
         'unit_id',
         'active',
         'price',
+        'currency_id',
         'currency',
         'pricing_unit_id',
         'pricing_per',
@@ -26,5 +27,10 @@ class Material extends Model
     public function pricingUnit()
     {
         return $this->belongsTo(Unit::class, 'pricing_unit_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 }

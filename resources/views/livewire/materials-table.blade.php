@@ -215,7 +215,8 @@
             </tbody>
         </table>
     </div>
-        {{-- RIGHT: pricing panel --}}
+
+    {{-- RIGHT: pricing panel --}}
     <div class="w-1/3">
         @if ($selectedMaterialId)
             <div class="bg-white border rounded p-4">
@@ -225,27 +226,32 @@
 
                 {{-- READ-ONLY --}}
                 @if (! $editMode)
-                    <dl class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <dt class="text-gray-600">Price</dt>
-                            <dd>
+                    <div class="flex items-start gap-4 text-sm tabular-nums">
+                        {{-- Currency (narrow) --}}
+                        <div class="flex-none w-16">
+                            <div class="text-gray-500">Currency</div>
+                            <div class="font-medium">
+                                {{ optional($currencies->firstWhere('id', $currencyId))->code ?? '—' }}
+                            </div>
+                        </div>
+
+                        {{-- Price (medium) --}}
+                        <div class="flex-none w-20">
+                            <div class="text-gray-500">Price</div>
+                            <div class="font-medium">
                                 {{ $price !== null ? number_format($price, 2) : '—' }}
-                            </dd>
+                            </div>
                         </div>
 
-                        <div class="flex justify-between">
-                            <dt class="text-gray-600">Currency</dt>
-                            <dd>{{ $currency }}</dd>
-                        </div>
-
-                        <div class="flex justify-between">
-                            <dt class="text-gray-600">Pricing</dt>
-                            <dd>
-                                per {{ $pricingPer }}
+                        {{-- Per (wide) --}}
+                        <div class="flex-1">
+                            <div class="text-gray-500">Per</div>
+                            <div class="font-medium whitespace-nowrap">
+                                {{ $pricingPer }}
                                 {{ optional($units->firstWhere('id', $pricingUnitId))->code ?? '—' }}
-                            </dd>
+                            </div>
                         </div>
-                    </dl>
+                    </div>
 
                     <div class="mt-4 text-right">
                         <button
@@ -260,28 +266,68 @@
                 {{-- EDIT MODE --}}
                 @if ($editMode)
                     <div class="space-y-3 text-sm">
-                        <input type="number" step="0.01" wire:model.defer="price" class="w-full border rounded px-2 py-1" />
+                        <div>
+                            <label class="block text-gray-600">Price</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                wire:model.defer="price"
+                                class="w-full border rounded px-2 py-1"
+                            />
+                        </div>
 
-                        <select wire:model.defer="currency" class="w-full border rounded px-2 py-1">
-                            <option value="EUR">EUR</option>
-                            <option value="RON">RON</option>
-                        </select>
-
-                        <div class="flex gap-2">
-                            <input type="number" wire:model.defer="pricingPer" class="w-1/2 border rounded px-2 py-1" />
-
-                            <select wire:model.defer="pricingUnitId" class="w-1/2 border rounded px-2 py-1">
-                                @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}">{{ $unit->code }}</option>
+                        <div>
+                            <label class="block text-gray-600">Currency</label>
+                            <select
+                                wire:model.defer="currencyId"
+                                class="w-full border rounded px-2 py-1"
+                            >
+                                <option value="">—</option>
+                                @foreach ($currencies as $currency)
+                                    <option value="{{ $currency->id }}">
+                                        {{ $currency->code }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
 
+                        <div class="flex gap-2">
+                            <div class="w-1/2">
+                                <label class="block text-gray-600">Per</label>
+                                <input
+                                    type="number"
+                                    wire:model.defer="pricingPer"
+                                    class="w-full border rounded px-2 py-1"
+                                />
+                            </div>
+
+                            <div class="w-1/2">
+                                <label class="block text-gray-600">Unit</label>
+                                <select
+                                    wire:model.defer="pricingUnitId"
+                                    class="w-full border rounded px-2 py-1"
+                                >
+                                    <option value="">—</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->id }}">
+                                            {{ $unit->code }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="flex justify-end gap-3">
-                            <button wire:click="cancelPricingEdit" class="text-gray-600">
+                            <button
+                                wire:click="cancelPricingEdit"
+                                class="text-gray-600"
+                            >
                                 Cancel
                             </button>
-                            <button wire:click="savePricing" class="text-blue-600 font-semibold">
+                            <button
+                                wire:click="savePricing"
+                                class="text-blue-600 font-semibold"
+                            >
                                 Save
                             </button>
                         </div>

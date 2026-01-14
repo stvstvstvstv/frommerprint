@@ -11,4 +11,7 @@ return [
     'actions' => 'Acțiuni',
     'active'  => 'Activ',
     'all'     => 'Toate',
+    'welcome' => 'Bine ați venit la Frommerprint',
+    'forgotpassword' => 'Ați uitat parola?',
+    'rememberme' => 'Ține-mă minte',
 ];

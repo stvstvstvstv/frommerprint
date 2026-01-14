@@ -23,7 +23,7 @@ class MaterialsTable extends Component
 
     // pricing fields
     public ?float $price = null;
-    public string $currency = 'EUR';
+    public ?int $currencyId = null;
     public ?int $pricingUnitId = null;
     public int $pricingPer = 1;
 
@@ -65,7 +65,7 @@ class MaterialsTable extends Component
         {
             return [
                 'price' => 'nullable|numeric|min:0',
-                'currency' => 'required|size:3',
+                'currencyId' => 'required|exists:currencies,id',
                 'pricingPer' => 'required|integer|min:1',
                 'pricingUnitId' => 'required|exists:units,id',
             ];
@@ -94,7 +94,7 @@ class MaterialsTable extends Component
 
         $material->update([
             'price' => $this->price,
-            'currency' => $this->currency,
+            'currency_id' => $this->currencyId,
             'pricing_unit_id' => $this->pricingUnitId,
             'pricing_per' => $this->pricingPer,
         ]);
@@ -186,6 +186,7 @@ class MaterialsTable extends Component
         return view('livewire.materials-table', [
             'materials' => $materials,
             'units' => Unit::orderBy('code')->get(),
+            'currencies' => \App\Models\Currency::orderBy('code')->get(),
         ]);
     }
 
@@ -198,7 +199,8 @@ class MaterialsTable extends Component
         $this->editMode = false;
 
         $this->price = $material->price;
-        $this->currency = $material->currency ?? 'EUR';
+//        $this->currency = $material->currency ?? 'EUR';
+        $this->currencyId = $material->currency_id;
         $this->pricingUnitId = $material->pricing_unit_id;
         $this->pricingPer = $material->pricing_per ?? 1;
     }

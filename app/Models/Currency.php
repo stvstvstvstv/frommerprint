@@ -12,4 +12,10 @@ class Currency extends Model
     {
         return $this->hasMany(ExchangeRate::class, 'currency', 'code');
     }
+
+    public function latestExchangeRate()
+    {
+        return $this->hasOne(ExchangeRate::class)
+            ->latestOfMany('rate_date');
+    }
 }

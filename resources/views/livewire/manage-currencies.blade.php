@@ -1,0 +1,98 @@
+<div>
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-semibold">Currencies</h1>
+
+        <button
+            wire:click="create"
+            class="px-4 py-2 bg-blue-600 text-white rounded">
+            Add currency
+        </button>
+    </div>
+
+    <table class="w-full border-collapse border mb-6">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border px-3 py-2">Code</th>
+                <th class="border px-3 py-2">Name</th>
+                <th class="border px-3 py-2 text-right">Latest rate</th>
+                <th class="border px-3 py-2 w-24">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach ($currencies as $currency)
+            <tr>
+                <td class="border px-3 py-2">{{ $currency->code }}</td>
+                <td class="border px-3 py-2">{{ $currency->name }}</td>
+
+                <td class="border px-3 py-2 text-right">
+                    @if ($currency->latestExchangeRate)
+                        {{ $currency->latestExchangeRate->rate_to_base }} ({{ $currency->latestExchangeRate->rate_date->format('Y-m-d') }})
+                    @else
+                        <span class="text-gray-400">—</span>
+                    @endif
+                </td>
+                <td class="border px-3 py-2 text-center">
+                    <button
+                        wire:click="edit({{ $currency->id }})"
+                        class="text-blue-600 hover:underline">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+
+    {{-- Modal --}}
+    @if ($showForm)
+        <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+            <div class="bg-white rounded shadow p-6 w-full max-w-md">
+
+                <h2 class="text-lg font-semibold mb-4">
+                    {{ $currencyId ? 'Edit currency' : 'Add currency' }}
+                </h2>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium">Code</label>
+                    <input
+                        type="text"
+                        wire:model.defer="code"
+                        maxlength="3"
+                        class="w-full border rounded px-3 py-2 uppercase"
+                        {{ $currencyId ? 'readonly' : '' }}
+                    >
+                    @error('code')
+                        <div class="text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium">Name</label>
+                    <input
+                        type="text"
+                        wire:model.defer="name"
+                        class="w-full border rounded px-3 py-2"
+                    >
+                    @error('name')
+                        <div class="text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button
+                        wire:click="cancel"
+                        class="px-4 py-2 border rounded">
+                        Cancel
+                    </button>
+
+                    <button
+                        wire:click="save"
+                        class="px-4 py-2 bg-blue-600 text-white rounded">
+                        Save
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    @endif
+</div>
