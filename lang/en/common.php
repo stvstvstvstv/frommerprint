@@ -11,7 +11,7 @@ return [
     'actions' => 'Actions',
     'active'  => 'Active',
     'all'     => 'All',
-    'welcome' => 'Welcome to Frommerprint',
+    'welcome' => 'Welcome to FrommerProd',
     'forgotpassword' => 'Forgot your password?',
     'rememberme' => 'Remember me',
 ];

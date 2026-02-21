@@ -20,9 +20,12 @@ class ManageCurrencies extends Component
         $this->loadCurrencies();
     }
 
-    public function loadCurrencies()
+    public function loadCurrencies(): void
     {
+        $base = config('currency.base');
+
         $this->currencies = Currency::with('latestExchangeRate')
+            ->orderByRaw("CASE WHEN code = ? THEN 0 ELSE 1 END", [$base])
             ->orderBy('code')
             ->get();
     }
@@ -79,6 +82,8 @@ class ManageCurrencies extends Component
 
     public function render()
     {
-        return view('livewire.manage-currencies');
+        return view('livewire.manage-currencies', [
+            'currencies' => $this->currencies,
+        ]);
     }
 }

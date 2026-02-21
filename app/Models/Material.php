@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+
 class Material extends Model
 {
     protected $fillable = [
@@ -32,5 +35,10 @@ class Material extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function bomAsFinished(): HasOne
+    {
+        return $this->hasOne(Bom::class, 'finished_material_id');
     }
 }

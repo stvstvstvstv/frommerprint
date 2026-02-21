@@ -5,6 +5,9 @@ return [
 
     'add' => 'Add material',
     'edit' => 'Edit material',
+    'cost' => 'Cost',
+    'price' => 'Price',
+    'printed' => 'Printed',
 
     'fields' => [
         'code' => 'Code',
@@ -12,15 +15,27 @@ return [
         'type' => 'Type',
         'unit' => 'Unit',
         'active' => 'Active',
+        'dimensions' => 'Dimensions',
     ],
 
     'types' => [
-        'raw' => 'Raw',
+        'raw' => 'Raw Material',
         'finished' => 'Finished',
         'packaging' => 'Packaging',
+        'box' => 'Box',
+        'jumbo' => 'Jumbo',
+        'paper' => 'Paper',
+        'ink' => 'Ink',
+        'glue' => 'Glue',
+        'foil' => 'Foil',
+        'machine' => 'Machine',
+        'tube' => 'Tube',
+        'label' => 'Label',
+        'other' => 'Other',
     ],
 
     'search_placeholder' => 'Search code or name…',
+    'selecttoview' => 'Select a material to view details',
 
     'confirm_delete_title' => 'Delete material?',
     'confirm_delete_body'  => 'This action cannot be undone.',

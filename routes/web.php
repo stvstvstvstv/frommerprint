@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
+use App\Livewire\BomEditor;
+use App\Models\Material;
+use App\Http\Controllers\BomController;
+
 /*
 |--------------------------------------------------------------------------
 | Public (guest) routes
@@ -11,6 +15,12 @@ use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
     return view('welcome');
 })->middleware('guest');
+
+
+Route::get('/bom/{material}', BomEditor::class);  
+
+Route::get('/bom/{bom}/items', [BomController::class, 'items'])
+    ->name('bom.items');
 
 /*
 |--------------------------------------------------------------------------

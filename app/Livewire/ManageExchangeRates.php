@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Currency;
 
-class ManageCurrencies extends Component
+class ManageExchangeRates extends Component
 {
     public $currencies;
 
@@ -78,6 +78,11 @@ class ManageCurrencies extends Component
 
     public function render()
     {
-        return view('livewire.manage-currencies');
+        return view('livewire.manage-exchange-rates', [
+            'currencies' => Currency::with('latestExchangeRate')
+                ->orderByRaw("CASE WHEN code = 'RON' THEN 0 ELSE 1 END")
+                ->orderBy('code')
+                ->get(),
+        ]);
     }
 }

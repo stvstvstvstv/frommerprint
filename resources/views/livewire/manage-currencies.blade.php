@@ -1,4 +1,4 @@
-<div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl font-semibold">Currencies</h1>
 
@@ -12,17 +12,21 @@
     <table class="w-full border-collapse border mb-6">
         <thead class="bg-gray-100">
             <tr>
-                <th class="border px-3 py-2">Code</th>
-                <th class="border px-3 py-2">Name</th>
+                <th class="border px-3 py-2 text-left">Code</th>
+                <th class="border px-3 py-2 text-left">Name</th>
                 <th class="border px-3 py-2 text-right">Latest rate</th>
                 <th class="border px-3 py-2 w-24">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach ($currencies as $currency)
-            <tr>
-                <td class="border px-3 py-2">{{ $currency->code }}</td>
-                <td class="border px-3 py-2">{{ $currency->name }}</td>
+            <tr @if ($currency->code === config('currency.base')) class="bg-yellow-50 font-semibold text-blue-600" @endif>
+                <td class="border px-3 py-2">
+                    {{ $currency->code }}
+                </td>
+                <td class="border px-3 py-2">
+                    {{ $currency->name }}
+                </td>
 
                 <td class="border px-3 py-2 text-right">
                     @if ($currency->latestExchangeRate)

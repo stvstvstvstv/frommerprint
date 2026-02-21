@@ -51,9 +51,17 @@
 
                 <select wire:model.live="material_type" class="rounded border-gray-300">
                     <option value="">Type</option>
-                    <option value="raw">Raw</option>
-                    <option value="finished">Finished</option>
-                    <option value="packaging">Packaging</option>
+                    <option value="finished">{{ __('materials.types.finished') }}</option>
+                    <option value="jumbo">{{ __('materials.types.jumbo') }}</option>
+                    <option value="paper">{{ __('materials.types.paper') }}</option>
+                    <option value="tube">{{ __('materials.types.tube') }}</option>
+                    <option value="ink">{{ __('materials.types.ink') }}</option>
+                    <option value="foil">{{ __('materials.types.foil') }}</option>
+                    <option value="box">{{ __('materials.types.box') }}</option>
+                    <option value="glue">{{ __('materials.types.glue') }}</option>
+                    <option value="label">{{ __('materials.types.label') }}</option>                    
+                    <option value="machine">{{ __('materials.types.machine') }}</option>
+                    <option value="other">{{ __('materials.types.other') }}</option>
                 </select>
 
                 <select wire:model.live="unit_id" class="rounded border-gray-300">
@@ -67,6 +75,36 @@
                     <input type="checkbox" wire:model.live="active">
                     Active
                 </label>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                <select wire:model.live="currencyId" class="rounded border-gray-300">
+                    <option value="">Currency</option>
+                    @foreach ($currencies as $currency)
+                        <option value="{{ $currency->id }}">{{ $currency->code }}</option>
+                    @endforeach
+                </select>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    wire:model.live="price"
+                    placeholder="Price"
+                    class="rounded border-gray-300"
+                />
+
+                <input
+                    type="number"
+                    wire:model.live="pricingPer"
+                    placeholder="Per"
+                    class="rounded border-gray-300"
+                />
+
+                <select wire:model.live="pricingUnitId" class="rounded border-gray-300">
+                    <option value="">Pricing unit</option>
+                    @foreach ($units as $unit)
+                        <option value="{{ $unit->id }}">{{ $unit->code }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mt-4 flex gap-2">
@@ -109,9 +147,17 @@
                 class="rounded border-gray-300 text-sm"
             >
                 <option value="">{{ __('common.all') }}</option>
-                <option value="raw">{{ __('materials.types.raw') }}</option>
                 <option value="finished">{{ __('materials.types.finished') }}</option>
-                <option value="packaging">{{ __('materials.types.packaging') }}</option>
+                <option value="jumbo">{{ __('materials.types.jumbo') }}</option>
+                <option value="paper">{{ __('materials.types.paper') }}</option>
+                <option value="tube">{{ __('materials.types.tube') }}</option>
+                <option value="ink">{{ __('materials.types.ink') }}</option>
+                <option value="foil">{{ __('materials.types.foil') }}</option>
+                <option value="box">{{ __('materials.types.box') }}</option>
+                <option value="glue">{{ __('materials.types.glue') }}</option>
+                <option value="label">{{ __('materials.types.label') }}</option>                    
+                <option value="machine">{{ __('materials.types.machine') }}</option>
+                <option value="other">{{ __('materials.types.other') }}</option>
             </select>
         </div>
 
@@ -126,34 +172,42 @@
 
 <div class="flex gap-6">
     {{-- LEFT: table --}}
-    <div class="w-2/3">
-        <table class="min-w-full border border-gray-200 rounded">
-            <thead class="bg-gray-100 text-sm text-gray-700">
+    <div class="w-3/4">
+        <table class="w-full border border-gray-200 rounded text-xs">
+            <thead class="bg-gray-100 text-gray-700">
                 <tr>
-                    <th class="px-3 py-2 w-40 text-left">{{ __('materials.fields.code') }}</th>
-                    <th class="px-3 py-2 text-left">{{ __('materials.fields.name') }}</th>
-                    <th class="px-3 py-2 w-28 text-left">{{ __('materials.fields.type') }}</th>
-                    <th class="px-3 py-2 w-20 text-left">{{ __('materials.fields.unit') }}</th>
-                    <th class="px-3 py-2 w-20text-center">{{ __('materials.fields.active') }}</th>
-                    <th class="px-3 py-2 w-24 text-right">{{ __('common.actions') }}</th>
+                    <th class="px-2 py-1 w-40 text-left">{{ __('materials.fields.code') }}</th>
+                    <th class="px-2 py-1 text-left">{{ __('materials.fields.dimensions') }}</th>
+                    <th class="px-2 py-1 text-left">{{ __('materials.printed') }}</th>
+                    <th class="px-2 py-1 text-left">{{ __('materials.fields.name') }}</th>
+                    <th class="px-2 py-1 w-20 text-left">{{ __('materials.fields.type') }}</th>
+                    <th class="px-2 py-1 w-14 text-left">{{ __('materials.fields.unit') }}</th>
+                    <th class="px-2 py-1 w-20text-center">{{ __('materials.fields.active') }}</th>
+                    <th class="px-2 py-1 w-24 text-right">{{ __('common.actions') }}</th>
                 </tr>
             </thead>
 
             <tbody class="divide-y">
                 @forelse ($materials as $material)
+
+                @php($isSelected = $selectedMaterialId === $material->id)
                     <tr
                         wire:key="material-{{ $material->id }}"
                         wire:click="selectMaterial({{ $material->id }})"
-                        class="cursor-pointer hover:bg-gray-50
-                            {{ $selectedMaterialId === $material->id ? 'bg-gray-100' : '' }}"
+                        @class([
+                            'cursor-pointer transition-colors hover:bg-gray-50',
+                            'bg-blue-50 font-medium' => $isSelected,
+                        ])
                     >
-                        <td class="px-3 py-2">{{ $material->code }}</td>
-                        <td class="px-3 py-2">{{ $material->name }}</td>
-                        <td class="px-3 py-2">{{ $material->material_type }}</td>
-                        <td class="px-3 py-2">
-                            {{ $material->unit?->code ?? '—' }}
-                        </td>
-                        <td class="px-3 py-2 text-center">
+                        @php($isSelected = $selectedMaterialId === $material->id)
+
+                        <td class="px-2 py-1 border-l-4 {{ $isSelected ? 'border-blue-500' : 'border-transparent' }}">{{ $material->code }}</td>
+                        <td class="px-2 py-1">{{ $material->dimensions }}</td>
+                        <td class="px-2 py-1">{{ $material->printed }}</td>
+                        <td class="px-2 py-1 {{ $isSelected ? 'bg-blue-50' : '' }}">{{ $material->name }}</td>
+                        <td class="px-2 py-1">{{ __('materials.types.' . $material->material_type) }}</td>
+                        <td class="px-2 py-1">{{ $material->unit?->code ?? '—' }}</td>
+                        <td class="px-2 py-1 text-center">
                             @if ($material->active)
                                 <span class="text-green-600 font-semibold">✓</span>
                             @else
@@ -164,7 +218,7 @@
                             <div class="inline-flex items-center gap-1">
                                 {{-- Edit --}}
                                 <button
-                                    wire:click="edit({{ $material->id }})"
+                                    wire:click.stop="edit({{ $material->id }})"
                                     class="p-1.5 rounded text-gray-500 hover:text-gray-800 hover:bg-gray-100"
                                     title="Edit"
                                 >
@@ -184,7 +238,7 @@
 
                                 {{-- Delete --}}
                                 <button
-                                    wire:click="confirmDelete({{ $material->id }})"
+                                    wire:click.stop="confirmDelete({{ $material->id }})"
                                     class="p-1.5 rounded text-gray-500 hover:text-red-700 hover:bg-gray-100"
                                     title="Delete"
                                 >
@@ -217,126 +271,43 @@
     </div>
 
     {{-- RIGHT: pricing panel --}}
-    <div class="w-1/3">
+    <div class="w-1/4">
         @if ($selectedMaterialId)
             <div class="bg-white border rounded p-4">
                 <h3 class="font-semibold mb-4">
-                    Pricing
+                    {{ $material_name }} - {{ $material_type === 'finished' ? __('materials.price') : __('materials.cost') }}
                 </h3>
 
-                {{-- READ-ONLY --}}
-                @if (! $editMode)
-                    <div class="flex items-start gap-4 text-sm tabular-nums">
-                        {{-- Currency (narrow) --}}
-                        <div class="flex-none w-16">
-                            <div class="text-gray-500">Currency</div>
-                            <div class="font-medium">
-                                {{ optional($currencies->firstWhere('id', $currencyId))->code ?? '—' }}
-                            </div>
-                        </div>
-
-                        {{-- Price (medium) --}}
-                        <div class="flex-none w-20">
-                            <div class="text-gray-500">Price</div>
-                            <div class="font-medium">
-                                {{ $price !== null ? number_format($price, 2) : '—' }}
-                            </div>
-                        </div>
-
-                        {{-- Per (wide) --}}
-                        <div class="flex-1">
-                            <div class="text-gray-500">Per</div>
-                            <div class="font-medium whitespace-nowrap">
-                                {{ $pricingPer }}
-                                {{ optional($units->firstWhere('id', $pricingUnitId))->code ?? '—' }}
-                            </div>
+                <div class="flex items-center gap-8 text-sm tabular-nums">
+                    {{-- Currency --}}
+                    <div class="flex items-baseline gap-2">
+                        <div class="text-gray-500">Currency</div>
+                        <div class="font-medium">
+                            {{ optional($currencies->firstWhere('id', $currencyId))->code ?? '—' }}
                         </div>
                     </div>
 
-                    <div class="mt-4 text-right">
-                        <button
-                            wire:click="$set('editMode', true)"
-                            class="text-blue-600"
-                        >
-                            Edit
-                        </button>
-                    </div>
-                @endif
-
-                {{-- EDIT MODE --}}
-                @if ($editMode)
-                    <div class="space-y-3 text-sm">
-                        <div>
-                            <label class="block text-gray-600">Price</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                wire:model.defer="price"
-                                class="w-full border rounded px-2 py-1"
-                            />
-                        </div>
-
-                        <div>
-                            <label class="block text-gray-600">Currency</label>
-                            <select
-                                wire:model.defer="currencyId"
-                                class="w-full border rounded px-2 py-1"
-                            >
-                                <option value="">—</option>
-                                @foreach ($currencies as $currency)
-                                    <option value="{{ $currency->id }}">
-                                        {{ $currency->code }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <div class="w-1/2">
-                                <label class="block text-gray-600">Per</label>
-                                <input
-                                    type="number"
-                                    wire:model.defer="pricingPer"
-                                    class="w-full border rounded px-2 py-1"
-                                />
-                            </div>
-
-                            <div class="w-1/2">
-                                <label class="block text-gray-600">Unit</label>
-                                <select
-                                    wire:model.defer="pricingUnitId"
-                                    class="w-full border rounded px-2 py-1"
-                                >
-                                    <option value="">—</option>
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}">
-                                            {{ $unit->code }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end gap-3">
-                            <button
-                                wire:click="cancelPricingEdit"
-                                class="text-gray-600"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                wire:click="savePricing"
-                                class="text-blue-600 font-semibold"
-                            >
-                                Save
-                            </button>
+                    {{-- Price --}}
+                    <div class="flex items-baseline gap-2">
+                        <div class="text-gray-500">Price</div>
+                        <div class="font-medium">
+                            {{ $price !== null ? number_format($price, 2) : '—' }}
                         </div>
                     </div>
-                @endif
+
+                    {{-- Per --}}
+                    <div class="flex items-baseline gap-2 whitespace-nowrap">
+                        <div class="text-gray-500">Per</div>
+                        <div class="font-medium">
+                            {{ $pricingPer }}
+                            {{ optional($units->firstWhere('id', $pricingUnitId))->code ?? '—' }}
+                        </div>
+                    </div>
+                </div>
             </div>
         @else
             <div class="text-gray-400 italic">
-                Select a material to view pricing
+                {{ __('materials.selecttoview') }}
             </div>
         @endif
     </div>
@@ -346,3 +317,18 @@
     {{ $materials->links() }}
 </div>
 
+<!--  Handle the save confirm dialog  --!>
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('confirm-material-switch', ({ newId }) => {
+            if (confirm('You have unsaved changes. Save them first?')) {
+                Livewire.find(@this.__instance.id).call('save');
+                Livewire.find(@this.__instance.id).call('selectMaterialNow', newId);
+            } else if (confirm('Discard changes and continue?')) {
+                Livewire.find(@this.__instance.id).call('resetForm');
+                Livewire.find(@this.__instance.id).call('selectMaterialNow', newId);
+            }
+            // else: do nothing (cancel)
+        });
+    });
+</script>
