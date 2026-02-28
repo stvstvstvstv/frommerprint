@@ -35,8 +35,8 @@ class Bom extends Model
         return $this->hasMany(BomItem::class);
     }
 
-    public function packagingRule(): HasOne
+    public function yieldRule(): HasOne
     {
-        return $this->hasOne(BomPackagingRule::class);
+        return $this->hasOne(BomYieldRule::class);
     }
 }
