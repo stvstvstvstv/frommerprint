@@ -30,6 +30,15 @@ class ProductionOrdersIndex extends Component
         $order = ProductionOrder::findOrFail($id);
         abort_if(! $order->isDraft(), 403);
 
+        $finished = Material::find($order->finished_material_id);
+        $jumbo    = Material::find($order->jumbo_material_id);
+
+        if (ProductionOrder::jumboTooNarrow($finished, $jumbo)) {
+            session()->flash('error', __('orders.cannot_start', ['id' => $id]) . ' '
+                . ProductionOrder::jumboTooNarrowMessage($finished, $jumbo));
+            return;
+        }
+
         $totalCost = $this->computeCost($order);
 
         $order->update([

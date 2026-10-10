@@ -15,6 +15,12 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="bg-red-100 text-red-800 text-sm px-4 py-3 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Status filter --}}
     <div class="flex gap-2 text-sm flex-wrap">
         @foreach ([

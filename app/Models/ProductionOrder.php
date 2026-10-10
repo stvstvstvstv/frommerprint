@@ -64,6 +64,25 @@ class ProductionOrder extends Model
     public function isComplete(): bool     { return $this->status === self::STATUS_COMPLETE; }
     public function isCancelled(): bool    { return $this->status === self::STATUS_CANCELLED; }
 
+    /**
+     * True when the finished roll is wider than the jumbo, so no rolls can
+     * be cut from it (the cost calculator then has no paper cost).
+     */
+    public static function jumboTooNarrow(?Material $finished, ?Material $jumbo): bool
+    {
+        return $finished?->width > 0
+            && $jumbo?->width > 0
+            && $jumbo->width < $finished->width;
+    }
+
+    public static function jumboTooNarrowMessage(Material $finished, Material $jumbo): string
+    {
+        return __('orders.jumbo_too_narrow', [
+            'jumbo_width'    => $jumbo->width,
+            'finished_width' => $finished->width,
+        ]);
+    }
+
     public function statusLabel(): string
     {
         return __('orders.statuses.' . $this->status);

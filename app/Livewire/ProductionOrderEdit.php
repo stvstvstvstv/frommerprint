@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use App\Models\Bom;
 use App\Models\BomYieldRule;
@@ -236,6 +237,7 @@ class ProductionOrderEdit extends Component
 
         $finished = Material::findOrFail($this->finishedMaterialId);
         $jumbo    = Material::findOrFail($this->jumboMaterialId);
+        $this->ensureJumboFits($finished, $jumbo);
 
         $this->order->update([
             'finished_material_id'       => $finished->id,
@@ -263,6 +265,7 @@ class ProductionOrderEdit extends Component
 
         $finished = Material::findOrFail($this->finishedMaterialId);
         $jumbo    = Material::findOrFail($this->jumboMaterialId);
+        $this->ensureJumboFits($finished, $jumbo);
 
         $this->order->update([
             'finished_material_id'       => $finished->id,
@@ -284,6 +287,15 @@ class ProductionOrderEdit extends Component
 
         session()->flash('status', __('orders.confirmed', ['id' => $this->order->id]));
         $this->redirect(route('production-orders.index'));
+    }
+
+    private function ensureJumboFits(Material $finished, Material $jumbo): void
+    {
+        if (ProductionOrder::jumboTooNarrow($finished, $jumbo)) {
+            throw ValidationException::withMessages([
+                'jumboMaterialId' => ProductionOrder::jumboTooNarrowMessage($finished, $jumbo),
+            ]);
+        }
     }
 
     public function render()

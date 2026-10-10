@@ -81,6 +81,9 @@ return [
         'total_rolls'         => 'Total (:count role)',
     ],
 
+    'jumbo_too_narrow' => 'Rola jumbo (:jumbo_width mm) este mai îngustă decât rola finită (:finished_width mm). Alegeți un jumbo mai lat.',
+    'cannot_start'     => 'Comanda #:id nu poate fi pornită.',
+
     'statuses' => [
         'draft' => 'Ciornă',
         'in_production' => 'În producție',

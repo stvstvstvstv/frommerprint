@@ -81,6 +81,9 @@ return [
         'total_rolls'         => 'Total (:count rolls)',
     ],
 
+    'jumbo_too_narrow' => 'The jumbo (:jumbo_width mm) is narrower than the finished roll (:finished_width mm). Choose a wider jumbo.',
+    'cannot_start'     => 'Order #:id cannot be started.',
+
     'statuses' => [
         'draft' => 'Draft',
         'in_production' => 'In Production',
