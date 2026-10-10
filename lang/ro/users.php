@@ -14,4 +14,6 @@ return [
         'password' => 'Parolă',
         'password_confirmation' => 'Confirmare Parolă'
     ],
+
+    'cannot_delete_self' => 'Nu vă puteți șterge propriul cont.',
 ];

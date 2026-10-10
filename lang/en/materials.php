@@ -10,6 +10,7 @@ return [
     'printed' => 'Printed',
 
     'fields' => [
+        'dimensions' => 'Dimensions',
         'code' => 'Code SmartBill',
         'sagaid' => 'SAGA ID',
         'name' => 'Name',
@@ -49,4 +50,9 @@ return [
     'confirm_delete_body'  => 'This action cannot be undone.',
 
     'empty' => 'No materials found.',
+
+    'edit_bom' => 'Edit BOM',
+
+    'unsaved_save'    => 'You have unsaved changes. Save them first?',
+    'unsaved_discard' => 'Discard changes and continue?',
 ];

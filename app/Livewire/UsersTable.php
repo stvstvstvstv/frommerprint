@@ -110,7 +110,7 @@ class UsersTable extends Component
     {
         if ($this->isEditingSelf()) 
         {
-            abort(403, 'You cannot delete your own account.');
+            abort(403, __('users.cannot_delete_self'));
         }
 
         $this->deleteId = $this->editingId;
@@ -119,7 +119,7 @@ class UsersTable extends Component
     public function deleteConfirmed(): void
     {
         if ($this->isEditingSelf()) {
-            abort(403, 'You cannot delete your own account.');
+            abort(403, __('users.cannot_delete_self'));
         }
 
         User::findOrFail($this->deleteId)->delete();

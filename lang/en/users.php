@@ -15,4 +15,6 @@ return [
         'password_confirmation' => 'Confirm Password'
     ],
 
+
+    'cannot_delete_self' => 'You cannot delete your own account.',
 ];

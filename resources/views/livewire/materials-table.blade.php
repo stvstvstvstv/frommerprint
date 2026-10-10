@@ -14,14 +14,14 @@
                     wire:click="$set('deleteId', null)"
                     class="px-4 py-2 rounded border border-gray-300 text-gray-700"
                 >
-                    {{ __('materials.cancel') }}
+                    {{ __('common.cancel') }}
                 </button>
 
                 <button
                     wire:click="deleteConfirmed"
                     class="px-4 py-2 rounded bg-red-600 text-white"
                 >
-                    {{ __('materials.delete') }}
+                    {{ __('common.delete') }}
                 </button>
             </div>
         </div>
@@ -264,7 +264,7 @@
                                         href="/bom/{{ $material->id }}"
                                         wire:navigate.stop
                                         class="p-1.5 rounded text-blue-500 hover:text-blue-800 hover:bg-blue-50"
-                                        title="Edit BOM"
+                                        title="{{ __('materials.edit_bom') }}"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter">
                                             <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
@@ -278,7 +278,7 @@
                                 <button
                                     wire:click.stop="edit({{ $material->id }})"
                                     class="p-1.5 rounded text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                                    title="Edit"
+                                    title="{{ __('common.edit') }}"
                                 >
                                     <!-- Edit (sharp pencil) -->
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -298,7 +298,7 @@
                                 <button
                                     wire:click.stop="confirmDelete({{ $material->id }})"
                                     class="p-1.5 rounded text-gray-500 hover:text-red-700 hover:bg-gray-100"
-                                    title="Delete"
+                                    title="{{ __('common.delete') }}"
                                 >
                                     <!-- Delete (minimal trash) -->
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +339,7 @@
                 <div class="flex items-center gap-8 text-sm tabular-nums">
                     {{-- Currency --}}
                     <div class="flex items-baseline gap-2">
-                        <div class="text-gray-500">Currency</div>
+                        <div class="text-gray-500">{{ __('materials.fields.currency') }}</div>
                         <div class="font-medium">
                             {{ optional($currencies->firstWhere('id', $currencyId))->code ?? '—' }}
                         </div>
@@ -347,7 +347,7 @@
 
                     {{-- Price --}}
                     <div class="flex items-baseline gap-2">
-                        <div class="text-gray-500">Price</div>
+                        <div class="text-gray-500">{{ __('materials.fields.price') }}</div>
                         <div class="font-medium">
                             {{ $price !== null ? number_format($price, 2) : '—' }}
                         </div>
@@ -355,7 +355,7 @@
 
                     {{-- Per --}}
                     <div class="flex items-baseline gap-2 whitespace-nowrap">
-                        <div class="text-gray-500">Per</div>
+                        <div class="text-gray-500">{{ __('materials.fields.pricing_per') }}</div>
                         <div class="font-medium">
                             {{ $pricingPer }}
                             {{ optional($units->firstWhere('id', $pricingUnitId))->code ?? '—' }}
@@ -379,10 +379,10 @@
 <script>
     document.addEventListener('livewire:init', () => {
         Livewire.on('confirm-material-switch', ({ newId }) => {
-            if (confirm('You have unsaved changes. Save them first?')) {
+            if (confirm(@js(__('materials.unsaved_save')))) {
                 Livewire.find(@this.__instance.id).call('save');
                 Livewire.find(@this.__instance.id).call('selectMaterialNow', newId);
-            } else if (confirm('Discard changes and continue?')) {
+            } else if (confirm(@js(__('materials.unsaved_discard')))) {
                 Livewire.find(@this.__instance.id).call('resetForm');
                 Livewire.find(@this.__instance.id).call('selectMaterialNow', newId);
             }

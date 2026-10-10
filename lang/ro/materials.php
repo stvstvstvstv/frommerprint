@@ -10,6 +10,7 @@ return [
     'printed' => 'Tipar',
 
     'fields' => [
+        'dimensions' => 'Dimensiuni',
         'code' => 'Cod SmartBill',
         'sagaid' => 'ID SAGA',
         'name' => 'Denumire',
@@ -49,4 +50,9 @@ return [
     'confirm_delete_body'  => 'Această acțiune nu poate fi anulată.',
 
     'empty' => 'Nu există materiale.',
+
+    'edit_bom' => 'Editează BOM',
+
+    'unsaved_save'    => 'Aveți modificări nesalvate. Le salvați mai întâi?',
+    'unsaved_discard' => 'Renunțați la modificări și continuați?',
 ];
