@@ -205,7 +205,7 @@
                         <table class="w-full text-xs border-collapse">
                             <tbody>
                                 <tr><td class="text-gray-500 w-40">{{ __('orders.form.material') }}</td><td>{{ $ink['material'] }}</td></tr>
-                                <tr><td class="text-gray-500">{{ __('orders.form.kg_per_roll') }}</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.g_per_roll') }}</td><td>{{ number_format($ink['ink_kg_per_roll'] * 1000, 3) }}</td></tr>
                                 <tr class="font-semibold border-t"><td>{{ __('orders.form.ink_cost') }}</td><td>{{ number_format($ink['cost'], 2) }}</td></tr>
                             </tbody>
                         </table>

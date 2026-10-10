@@ -40,7 +40,7 @@ return [
     'ink'              => 'Ink',
     'roll_area'        => 'Roll area',
     'kg_per_m2'        => 'kg / m²',
-    'kg_per_roll'      => 'kg / roll',
+    'g_per_roll'       => 'g / roll',
     'price_per_kg'     => 'Price / kg',
     'ink_cost'         => 'Ink cost',
     'tube'             => 'Tube',

@@ -71,7 +71,7 @@ return [
         'paper_cost'          => 'Paper cost',
         'ink'                 => 'Ink',
         'material'            => 'Material',
-        'kg_per_roll'         => 'kg / roll',
+        'g_per_roll'          => 'g / roll',
         'ink_cost'            => 'Ink cost',
         'packaging'           => 'Packaging',
         'qty'                 => 'Qty',

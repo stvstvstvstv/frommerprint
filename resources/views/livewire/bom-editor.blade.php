@@ -267,7 +267,7 @@
                         <tr><td class="text-gray-500 w-40">{{ __('bom.material') }}</td><td>{{ $ink['material'] }}</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.roll_area') }}</td><td>{{ $ink['roll_area_m2'] }} m²</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.kg_per_m2') }}</td><td>{{ $ink['ink_kg_per_m2'] }}</td></tr>
-                        <tr><td class="text-gray-500">{{ __('bom.kg_per_roll') }}</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.g_per_roll') }}</td><td>{{ number_format($ink['ink_kg_per_roll'] * 1000, 3) }}</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.price_per_kg') }}</td><td>{{ ($ink['unit_price'] === null ? '—' : number_format($ink['unit_price'], 4)) }}</td></tr>
                         <tr class="font-semibold border-t"><td>{{ __('bom.ink_cost') }}</td><td>{{ number_format($ink['cost'], 4) }}</td></tr>
                     </tbody>

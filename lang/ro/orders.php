@@ -71,7 +71,7 @@ return [
         'paper_cost'          => 'Cost hârtie',
         'ink'                 => 'Cerneală',
         'material'            => 'Material',
-        'kg_per_roll'         => 'kg / rolă',
+        'g_per_roll'          => 'g / rolă',
         'ink_cost'            => 'Cost cerneală',
         'packaging'           => 'Ambalare',
         'qty'                 => 'Cant.',
