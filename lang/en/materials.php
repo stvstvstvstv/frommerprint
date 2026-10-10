@@ -10,12 +10,20 @@ return [
     'printed' => 'Printed',
 
     'fields' => [
-        'code' => 'Code',
+        'code' => 'Code SmartBill',
+        'sagaid' => 'SAGA ID',
         'name' => 'Name',
         'type' => 'Type',
         'unit' => 'Unit',
         'active' => 'Active',
-        'dimensions' => 'Dimensions',
+        'width' => 'Width (mm)',
+        'length' => 'Length (m)',
+        'diameter' => 'Diameter (mm)',
+        'gsm' => 'GSM',
+        'price' => 'Price',
+        'currency' => 'Currency',
+        'pricing_per' => 'Per',
+        'pricing_unit' => 'Pricing Unit',
     ],
 
     'types' => [

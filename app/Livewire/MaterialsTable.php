@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Url;
 use App\Models\Material;
 use App\Models\Unit;
 
@@ -15,12 +16,19 @@ class MaterialsTable extends Component
 
     // Filters
     public string $search = '';
+    #[Url]
     public string $type = '';
 
     // Selected material for details or editing
     public ?int $selectedMaterialId = null;
     // public bool $editMode = false;
     public bool $isDirty = false;
+
+    // dimension fields
+    public ?float $width = null;
+    public ?float $length = null;
+    public ?float $gsm = null;
+    public ?float $diameter = null;
 
     // pricing fields
     public ?float $price = null;
@@ -32,6 +40,7 @@ class MaterialsTable extends Component
     public ?int $editingId = null;
 
     public string $code = '';
+    public string $saga_id = '';
     public string $name = '';
     public string $material_type = '';
     public string $material_name = '';
@@ -62,11 +71,18 @@ class MaterialsTable extends Component
     protected function rules(): array
     {
         return [
-            'code' => 'required|string|max:255|unique:materials,code,' . $this->editingId,
-            'name' => 'required|string|max:255',
-            'material_type' => 'required|in:raw,finished,packaging, box,machine,tube,foil,ink,paper,other',
+            'code'    => 'required|string|max:255|unique:materials,code,' . $this->editingId,
+            'saga_id' => 'nullable|string|max:255',
+            'name'    => 'required|string|max:255',
+            'material_type' => 'required|in:finished,jumbo,paper,tube,ink,foil,box,glue,label,machine,other',
             'unit_id' => 'required|exists:units,id',
             'active' => 'boolean',
+
+            // dimensions
+            'width'    => 'nullable|numeric|min:0',
+            'length'   => 'nullable|numeric|min:0',
+            'gsm'      => 'nullable|numeric|min:0',
+            'diameter' => 'nullable|numeric|min:0',
 
             // pricing (now mandatory for create/edit)
             'price' => 'nullable|numeric|min:0',
@@ -85,11 +101,18 @@ class MaterialsTable extends Component
         Material::updateOrCreate(
             ['id' => $this->editingId],
             [
-                'code' => $data['code'],
-                'name' => $data['name'],
+                'code'    => $data['code'],
+                'saga_id' => $data['saga_id'] ?: null,
+                'name'    => $data['name'],
                 'material_type' => $data['material_type'],
                 'unit_id' => $data['unit_id'],
                 'active' => $data['active'] ?? true,
+
+                // dimensions
+                'width'    => $data['width'],
+                'length'   => $data['length'],
+                'gsm'      => $data['gsm'],
+                'diameter' => $data['diameter'],
 
                 // pricing
                 'price' => $data['price'],
@@ -110,11 +133,18 @@ class MaterialsTable extends Component
         $this->editingId = $material->id;
 
         // core
-        $this->code = $material->code;
-        $this->name = $material->name;
+        $this->code    = $material->code;
+        $this->saga_id = $material->saga_id ?? '';
+        $this->name    = $material->name;
         $this->material_type = $material->material_type;
         $this->unit_id = $material->unit_id;
         $this->active = (bool) $material->active;
+
+        // dimensions
+        $this->width    = $material->width;
+        $this->length   = $material->length;
+        $this->gsm      = $material->gsm;
+        $this->diameter = $material->diameter;
 
         // pricing
         $this->price = $material->price;
@@ -123,7 +153,6 @@ class MaterialsTable extends Component
         $this->pricingPer = $material->pricing_per ?? 1;
 
         $this->showForm = true;
-        $this->editMode = false; // pricing edit mode will be removed next step
     }
 
     // Reset form state
@@ -131,12 +160,18 @@ class MaterialsTable extends Component
     {
         $this->editingId = null;
 
-        $this->code = '';
-        $this->name = '';
+        $this->code    = '';
+        $this->saga_id = '';
+        $this->name    = '';
         $this->material_type = '';
         $this->material_name = '';
         $this->unit_id = null;
         $this->active = true;
+
+        $this->width    = null;
+        $this->length   = null;
+        $this->gsm      = null;
+        $this->diameter = null;
 
         $this->price = null;
         $this->currencyId = null;
@@ -187,6 +222,7 @@ class MaterialsTable extends Component
                     $qq->where('code', 'like', '%' . $this->search . '%')
                        ->orWhere('name', 'like', '%' . $this->search . '%')
                        ->orWhere('dimensions', 'like', '%' . $this->search . '%')
+                       ->orWhere('saga_id', 'like', '%' . $this->search . '%')
                 )
             )
             ->orderBy('code')

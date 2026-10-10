@@ -12,6 +12,10 @@
             BOM: {{ $bom->finishedMaterial->name }}
         </h2>
         <div class="mt-1 text-sm text-gray-500 space-x-4">
+            <span>Code: <span class="font-mono">{{ $bom->finishedMaterial->code ?? '—' }}</span></span>
+            <span> / SAGA ID: <span class="font-mono">{{ $bom->finishedMaterial->saga_id ?? '—' }}</span></span>
+        </div>
+        <div class="mt-1 text-sm text-gray-500 space-x-4">
             <span>Width: {{ $bom->finishedMaterial->width ?? '—' }} mm</span>
             <span>Length: {{ $bom->finishedMaterial->length ?? '—' }} m</span>
             <span>Setup: {{ $bom->setup_time_minutes }} min</span>
@@ -101,6 +105,23 @@
             </div>
         </div>
 
+        {{-- Tube --}}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Tube Material</label>
+                <select
+                    wire:model.live="yieldRule.tube_material_id"
+                    wire:change="recalculate"
+                    class="w-full border rounded px-2 py-1 text-sm"
+                >
+                    <option value="">— none —</option>
+                    @foreach ($tubeOptions as $m)
+                        <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
         {{-- Packaging --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
@@ -111,7 +132,7 @@
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
                     <option value="">— none —</option>
-                    @foreach ($packagingOptions as $m)
+                    @foreach ($foilOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
                 </select>
@@ -139,7 +160,7 @@
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
                     <option value="">— none —</option>
-                    @foreach ($packagingOptions as $m)
+                    @foreach ($boxOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
                 </select>
@@ -159,7 +180,7 @@
         </div>
     </div>
 
-    {{-- Non-geometric BOM items (machine, tube, graphic, other) --}}
+    {{-- Non-geometric BOM items (machine, graphic, other) --}}
     @if (count($items) > 0)
         <div class="bg-white p-4 rounded shadow">
             <h3 class="font-semibold mb-2">Other Components</h3>
@@ -241,6 +262,22 @@
                         <tr><td class="text-gray-500">kg / roll</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
                         <tr><td class="text-gray-500">Price / kg</td><td>{{ number_format($ink['unit_price'], 4) }}</td></tr>
                         <tr class="font-semibold border-t"><td>Ink cost</td><td>{{ number_format($ink['cost'], 4) }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        {{-- Tube --}}
+        @if ($costPreview['breakdown']['tube'] ?? null)
+            @php $tube = $costPreview['breakdown']['tube']; @endphp
+            <div>
+                <h4 class="font-semibold text-sm mb-1">Tube</h4>
+                <table class="w-full text-xs border-collapse">
+                    <tbody>
+                        <tr><td class="text-gray-500 w-40">Material</td><td>{{ $tube['material'] }}</td></tr>
+                        <tr><td class="text-gray-500">Qty</td><td>{{ number_format($tube['quantity']) }}</td></tr>
+                        <tr><td class="text-gray-500">Unit price</td><td>{{ number_format($tube['unit_price'], 4) }}</td></tr>
+                        <tr class="font-semibold border-t"><td>Tube cost</td><td>{{ number_format($tube['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
             </div>

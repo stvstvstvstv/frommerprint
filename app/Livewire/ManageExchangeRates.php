@@ -4,84 +4,45 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Currency;
+use App\Models\ExchangeRate;
 
 class ManageExchangeRates extends Component
 {
-    public $currencies;
-
-    // Form fields
-    public $currencyId = null;
-    public $code = '';
-    public $name = '';
-
-    public $showForm = false;
+    public $currencyId = '';
+    public $rateDate = '';
+    public $rate = '';
 
     public function mount()
     {
-        $this->loadCurrencies();
-    }
-
-    public function loadCurrencies()
-    {
-        $this->currencies = Currency::orderBy('code')->get();
-    }
-
-    public function create()
-    {
-        $this->resetForm();
-        $this->showForm = true;
-    }
-
-    public function edit($id)
-    {
-        $currency = Currency::findOrFail($id);
-
-        $this->currencyId = $currency->id;
-        $this->code = $currency->code;
-        $this->name = $currency->name;
-
-        $this->showForm = true;
+        $this->rateDate = now()->toDateString();
     }
 
     public function save()
     {
         $this->validate([
-            'code' => 'required|string|size:3|unique:currencies,code,' . $this->currencyId,
-            'name' => 'required|string|max:255',
+            'currencyId' => 'required|exists:currencies,id',
+            'rateDate'   => 'required|date',
+            'rate'       => 'required|numeric|min:0.000001',
         ]);
 
-        Currency::updateOrCreate(
-            ['id' => $this->currencyId],
-            [
-                'code' => strtoupper($this->code),
-                'name' => $this->name,
-            ]
+        ExchangeRate::updateOrCreate(
+            ['currency_id' => $this->currencyId, 'rate_date' => $this->rateDate],
+            ['rate_to_base' => $this->rate]
         );
 
-        $this->showForm = false;
-        $this->resetForm();
-        $this->loadCurrencies();
-    }
-
-    public function cancel()
-    {
-        $this->showForm = false;
-        $this->resetForm();
-    }
-
-    private function resetForm()
-    {
-        $this->currencyId = null;
-        $this->code = '';
-        $this->name = '';
+        $this->rate = '';
     }
 
     public function render()
     {
         return view('livewire.manage-exchange-rates', [
-            'currencies' => Currency::with('latestExchangeRate')
-                ->orderByRaw("CASE WHEN code = 'RON' THEN 0 ELSE 1 END")
+            'currencies' => Currency::orderByRaw("CASE WHEN code = 'RON' THEN 0 ELSE 1 END")
                 ->orderBy('code')
+                ->get(),
+            'rates' => ExchangeRate::with('currency')
+                ->orderByDesc('rate_date')
+                ->orderBy('currency_id')
+                ->limit(200)
                 ->get(),
         ]);
     }

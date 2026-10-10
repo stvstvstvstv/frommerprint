@@ -25,7 +25,7 @@ class FetchBnrExchangeRates extends Command
 
         // Parse XML
         $xml = new SimpleXMLElement($response->body());
-        $xml->registerXPathNamespace('ns', 'http://www.bnr.ro/xsd');
+        $xml->registerXPathNamespace('ns', 'https://www.bnr.ro/xsd');
 
         $cube = $xml->xpath('//ns:Cube')[0] ?? null;
 

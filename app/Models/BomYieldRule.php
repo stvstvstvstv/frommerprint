@@ -13,6 +13,7 @@ class BomYieldRule extends Model
         'paper_waste_pct',
         'ink_kg_per_m2',
         'ink_material_id',
+        'tube_material_id',
         'foil_per_roll',
         'rolls_per_box',
         'foil_material_id',
@@ -39,6 +40,11 @@ class BomYieldRule extends Model
     public function inkMaterial(): BelongsTo
     {
         return $this->belongsTo(Material::class, 'ink_material_id');
+    }
+
+    public function tubeMaterial(): BelongsTo
+    {
+        return $this->belongsTo(Material::class, 'tube_material_id');
     }
 
     public function foilMaterial(): BelongsTo

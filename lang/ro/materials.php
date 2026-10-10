@@ -10,12 +10,20 @@ return [
     'printed' => 'Tipar',
 
     'fields' => [
-        'code' => 'Cod',
+        'code' => 'Cod SmartBill',
+        'sagaid' => 'ID SAGA',
         'name' => 'Denumire',
         'type' => 'Tip',
         'unit' => 'UM',
         'active' => 'Activ',
-        'dimensions' => 'Dimensiuni',
+        'width' => 'Lățime (mm)',
+        'length' => 'Lungime (m)',
+        'diameter' => 'Diametru (mm)',
+        'gsm' => 'GSM',
+        'price' => 'Preț',
+        'currency' => 'Monedă',
+        'pricing_per' => 'Per',
+        'pricing_unit' => 'UM preț',
     ],
 
     'types' => [

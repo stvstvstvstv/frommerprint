@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
 use App\Livewire\BomEditor;
-use App\Models\Material;
 use App\Http\Controllers\BomController;
 
 /*
@@ -17,11 +16,6 @@ Route::get('/', function () {
 })->middleware('guest');
 
 
-Route::get('/bom/{material}', BomEditor::class);  
-
-Route::get('/bom/{bom}/items', [BomController::class, 'items'])
-    ->name('bom.items');
-
 /*
 |--------------------------------------------------------------------------
 | Authenticated routes
@@ -29,9 +23,17 @@ Route::get('/bom/{bom}/items', [BomController::class, 'items'])
 */
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/production-orders',              \App\Livewire\ProductionOrdersIndex::class)->name('production-orders.index');
+    Route::get('/production-orders/create',       \App\Livewire\ProductionOrderCreate::class)->name('production-orders.create');
+    Route::get('/production-orders/{order}/edit', \App\Livewire\ProductionOrderEdit::class)->name('production-orders.edit');
+
+    Route::get('/bom/{material}', BomEditor::class)->name('bom.editor');
+
+    Route::get('/bom/{bom}/items', [BomController::class, 'items'])
+        ->name('bom.items');
+
+    Route::get('/dashboard', [\App\Http\Controllers\HomeController::class, 'index'])
+        ->name('dashboard');
 
     // === YOUR APP ROUTES (RESTORED) ===
 
@@ -45,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/admin/exchange-rates', 'admin.exchange-rates')
         ->name('admin.exchange-rates');
 
-    Route::view('/users', 'users.index')
+    Route::get('/users', \App\Livewire\UsersTable::class)
         ->name('users.index');
 
     // Breeze profile routes

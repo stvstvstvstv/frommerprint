@@ -14,7 +14,7 @@ class BomEditor extends Component
 
     public int $previewQuantity = 24;
 
-    /** Non-geometric BOM items (machine, tube, graphic, other) */
+    /** Non-geometric BOM items (machine, graphic, other) */
     public array $items = [];
 
     /** Yield rule fields, editable in the form */
@@ -23,6 +23,7 @@ class BomEditor extends Component
         'paper_waste_pct'             => 1.00,
         'ink_kg_per_m2'               => null,
         'ink_material_id'             => null,
+        'tube_material_id'            => null,
         'foil_per_roll'               => 0,
         'rolls_per_box'               => 0,
         'foil_material_id'            => null,
@@ -32,22 +33,30 @@ class BomEditor extends Component
     public array $costPreview = [];
 
     // Material option lists for selects
-    public array $jumboOptions     = [];
-    public array $inkOptions       = [];
-    public array $packagingOptions = [];
+    public array $jumboOptions = [];
+    public array $inkOptions   = [];
+    public array $tubeOptions  = [];
+    public array $foilOptions  = [];
+    public array $boxOptions   = [];
 
     public function mount(Material $material)
     {
-        $this->bom = $material->bomAsFinished()
-            ->with([
-                'items.componentMaterial',
-                'yieldRule.preferredJumboMaterial',
-                'yieldRule.inkMaterial',
-                'yieldRule.foilMaterial',
-                'yieldRule.boxMaterial',
-                'finishedMaterial',
-            ])
-            ->firstOrFail();
+        abort_if($material->material_type !== 'finished', 404);
+
+        $bom = $material->bomAsFinished()->firstOrCreate(
+            ['finished_material_id' => $material->id],
+            ['setup_time_minutes' => 0, 'active' => true]
+        );
+
+        $this->bom = Bom::with([
+            'items.componentMaterial',
+            'yieldRule.preferredJumboMaterial',
+            'yieldRule.inkMaterial',
+            'yieldRule.tubeMaterial',
+            'yieldRule.foilMaterial',
+            'yieldRule.boxMaterial',
+            'finishedMaterial',
+        ])->findOrFail($bom->id);
 
         $this->loadMaterialOptions();
         $this->hydrateState();
@@ -55,19 +64,31 @@ class BomEditor extends Component
 
     protected function loadMaterialOptions(): void
     {
-        $this->jumboOptions = Material::where('material_type', 'raw')
+        $this->jumboOptions = Material::where('material_type', 'jumbo')
             ->where('active', true)
             ->orderBy('name')
             ->get(['id', 'name', 'width', 'length', 'gsm'])
             ->toArray();
 
-        $this->inkOptions = Material::where('material_type', 'raw')
+        $this->inkOptions = Material::where('material_type', 'ink')
             ->where('active', true)
             ->orderBy('name')
             ->get(['id', 'name'])
             ->toArray();
 
-        $this->packagingOptions = Material::where('material_type', 'packaging')
+        $this->tubeOptions = Material::where('material_type', 'tube')
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->toArray();
+
+        $this->foilOptions = Material::where('material_type', 'foil')
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->toArray();
+
+        $this->boxOptions = Material::where('material_type', 'box')
             ->where('active', true)
             ->orderBy('name')
             ->get(['id', 'name'])
@@ -78,7 +99,7 @@ class BomEditor extends Component
     {
         // Only expose non-geometric items as editable
         $this->items = $this->bom->items
-            ->filter(fn ($item) => ! in_array($item->role->value, ['paper', 'ink', 'jumbo', 'foil', 'box']))
+            ->filter(fn ($item) => ! in_array($item->role->value, BomCostCalculator::GEOMETRIC_ROLES))
             ->map(fn ($item) => [
                 'id'            => $item->id,
                 'role'          => $item->role->value,
@@ -95,6 +116,7 @@ class BomEditor extends Component
             'paper_waste_pct'             => $rule?->paper_waste_pct ?? 1.00,
             'ink_kg_per_m2'               => $rule?->ink_kg_per_m2,
             'ink_material_id'             => $rule?->ink_material_id,
+            'tube_material_id'            => $rule?->tube_material_id,
             'foil_per_roll'               => $rule?->foil_per_roll ?? 0,
             'rolls_per_box'               => $rule?->rolls_per_box ?? 0,
             'foil_material_id'            => $rule?->foil_material_id,
@@ -110,6 +132,7 @@ class BomEditor extends Component
             'items.componentMaterial',
             'yieldRule.preferredJumboMaterial',
             'yieldRule.inkMaterial',
+            'yieldRule.tubeMaterial',
             'yieldRule.foilMaterial',
             'yieldRule.boxMaterial',
             'finishedMaterial',
@@ -143,6 +166,12 @@ class BomEditor extends Component
             'inkMaterial',
             $this->yieldRule['ink_material_id']
                 ? Material::find($this->yieldRule['ink_material_id'])
+                : null
+        );
+        $bom->yieldRule->setRelation(
+            'tubeMaterial',
+            $this->yieldRule['tube_material_id']
+                ? Material::find($this->yieldRule['tube_material_id'])
                 : null
         );
         $bom->yieldRule->setRelation(
@@ -187,6 +216,7 @@ class BomEditor extends Component
             'items.componentMaterial',
             'yieldRule.preferredJumboMaterial',
             'yieldRule.inkMaterial',
+            'yieldRule.tubeMaterial',
             'yieldRule.foilMaterial',
             'yieldRule.boxMaterial',
             'finishedMaterial',

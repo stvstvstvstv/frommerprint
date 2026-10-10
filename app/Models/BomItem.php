@@ -15,6 +15,7 @@ class BomItem extends Model
         'quantity',
         'waste_factor_pct',
         'notes',
+        'sort_order',
     ];
 
     protected $casts = [

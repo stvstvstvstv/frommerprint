@@ -14,14 +14,14 @@
                     wire:click="$set('deleteId', null)"
                     class="px-4 py-2 rounded border border-gray-300 text-gray-700"
                 >
-                    Cancel
+                    {{ __('materials.cancel') }}
                 </button>
 
                 <button
                     wire:click="deleteConfirmed"
                     class="px-4 py-2 rounded bg-red-600 text-white"
                 >
-                    Delete
+                    {{ __('materials.delete') }}
                 </button>
             </div>
         </div>
@@ -31,95 +31,137 @@
     @if($showForm)
         <div class="bg-white p-4 rounded shadow mb-6">
             <h3 class="font-semibold mb-4">
-                {{ $editingId ? 'Edit Material' : 'Add Material' }}
+                {{ $editingId ? __('materials.edit') : __('materials.add') }}
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <input
-                    type="text"
-                    wire:model.live="code"
-                    placeholder="Code"
-                    class="rounded border-gray-300"
-                />
-
-                <input
-                    type="text"
-                    wire:model.live="name"
-                    placeholder="Name"
-                    class="rounded border-gray-300"
-                />
-
-                <select wire:model.live="material_type" class="rounded border-gray-300">
-                    <option value="">Type</option>
-                    <option value="finished">{{ __('materials.types.finished') }}</option>
-                    <option value="jumbo">{{ __('materials.types.jumbo') }}</option>
-                    <option value="paper">{{ __('materials.types.paper') }}</option>
-                    <option value="tube">{{ __('materials.types.tube') }}</option>
-                    <option value="ink">{{ __('materials.types.ink') }}</option>
-                    <option value="foil">{{ __('materials.types.foil') }}</option>
-                    <option value="box">{{ __('materials.types.box') }}</option>
-                    <option value="glue">{{ __('materials.types.glue') }}</option>
-                    <option value="label">{{ __('materials.types.label') }}</option>                    
-                    <option value="machine">{{ __('materials.types.machine') }}</option>
-                    <option value="other">{{ __('materials.types.other') }}</option>
-                </select>
-
-                <select wire:model.live="unit_id" class="rounded border-gray-300">
-                    <option value="">Unit</option>
-                    @foreach(\App\Models\Unit::orderBy('code')->get() as $unit)
-                        <option value="{{ $unit->id }}">{{ $unit->code }}</option>
-                    @endforeach
-                </select>
-
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" wire:model.live="active">
-                    Active
-                </label>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-                <select wire:model.live="currencyId" class="rounded border-gray-300">
-                    <option value="">Currency</option>
-                    @foreach ($currencies as $currency)
-                        <option value="{{ $currency->id }}">{{ $currency->code }}</option>
-                    @endforeach
-                </select>
-
-                <input
-                    type="number"
-                    step="0.01"
-                    wire:model.live="price"
-                    placeholder="Price"
-                    class="rounded border-gray-300"
-                />
-
-                <input
-                    type="number"
-                    wire:model.live="pricingPer"
-                    placeholder="Per"
-                    class="rounded border-gray-300"
-                />
-
-                <select wire:model.live="pricingUnitId" class="rounded border-gray-300">
-                    <option value="">Pricing unit</option>
-                    @foreach ($units as $unit)
-                        <option value="{{ $unit->id }}">{{ $unit->code }}</option>
-                    @endforeach
-                </select>
+            {{-- Row 1: Code, SAGA ID, Name --}}
+            <div class="grid grid-cols-4 gap-3 mb-3">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.code') }}</label>
+                    <input
+                        type="text"
+                        wire:model.live="code"
+                        class="w-full font-mono rounded border-gray-300 text-sm"
+                    />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.sagaid') }}</label>
+                    <input
+                        type="text"
+                        wire:model.live="saga_id"
+                        class="w-full font-mono rounded border-gray-300 text-sm"
+                    />
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.name') }}</label>
+                    <input
+                        type="text"
+                        wire:model.live="name"
+                        class="w-full rounded border-gray-300 text-sm"
+                    />
+                </div>
             </div>
 
-            <div class="mt-4 flex gap-2">
+            {{-- Row 2: Type, Unit, Active --}}
+            <div class="grid grid-cols-12 gap-3 mb-3">
+                <div class="col-span-4">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.type') }}</label>
+                    <select wire:model.live="material_type" class="w-full rounded border-gray-300 text-sm">
+                        <option value="">—</option>
+                        <option value="finished">{{ __('materials.types.finished') }}</option>
+                        <option value="jumbo">{{ __('materials.types.jumbo') }}</option>
+                        <option value="paper">{{ __('materials.types.paper') }}</option>
+                        <option value="tube">{{ __('materials.types.tube') }}</option>
+                        <option value="ink">{{ __('materials.types.ink') }}</option>
+                        <option value="foil">{{ __('materials.types.foil') }}</option>
+                        <option value="box">{{ __('materials.types.box') }}</option>
+                        <option value="glue">{{ __('materials.types.glue') }}</option>
+                        <option value="label">{{ __('materials.types.label') }}</option>
+                        <option value="machine">{{ __('materials.types.machine') }}</option>
+                        <option value="other">{{ __('materials.types.other') }}</option>
+                    </select>
+                </div>
+                <div class="col-span-3">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.unit') }}</label>
+                    <select wire:model.live="unit_id" class="w-full rounded border-gray-300 text-sm">
+                        <option value="">—</option>
+                        @foreach(\App\Models\Unit::orderBy('code')->get() as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->code }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-span-2 flex items-end pb-2">
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" wire:model.live="active">
+                        {{ __('materials.fields.active') }}
+                    </label>
+                </div>
+            </div>
+
+            {{-- Row 3: Dimensions --}}
+            <div class="grid grid-cols-4 gap-3 mb-3">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.width') }}</label>
+                    <input type="number" step="0.01" wire:model.live="width" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.length') }}</label>
+                    <input type="number" step="0.01" wire:model.live="length" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.gsm') }}</label>
+                    <input type="number" step="0.01" wire:model.live="gsm" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                @if ($material_type === 'tube')
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.diameter') }}</label>
+                    <input type="number" step="0.01" wire:model.live="diameter" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                @endif
+            </div>
+
+            {{-- Row 3: Pricing --}}
+            <div class="grid grid-cols-12 gap-3 mb-4">
+                <div class="col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.currency') }}</label>
+                    <select wire:model.live="currencyId" class="w-full rounded border-gray-300 text-sm">
+                        <option value="">—</option>
+                        @foreach ($currencies as $currency)
+                            <option value="{{ $currency->id }}">{{ $currency->code }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-span-4">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.price') }}</label>
+                    <input type="number" step="0.01" wire:model.live="price" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.pricing_per') }}</label>
+                    <input type="number" wire:model.live="pricingPer" class="w-full rounded border-gray-300 text-sm" />
+                </div>
+                <div class="col-span-4">
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.pricing_unit') }}</label>
+                    <select wire:model.live="pricingUnitId" class="w-full rounded border-gray-300 text-sm">
+                        <option value="">—</option>
+                        @foreach ($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->code }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
                 <button
                     type="button"
                     wire:click="save"
-                    class="bg-blue-600 text-white px-4 py-2 rounded"
+                    class="bg-blue-600 text-white px-4 py-2 rounded text-sm"
                 >
                     {{ $editingId ? __('common.update') : __('common.save') }}
                 </button>
-
                 <button
                     type="button"
                     wire:click="resetForm"
-                    class="bg-gray-500 text-white px-4 py-2 rounded"
+                    class="bg-gray-500 text-white px-4 py-2 rounded text-sm"
                 >
                     {{ __('common.cancel') }}
                 </button>
@@ -201,7 +243,7 @@
                     >
                         @php($isSelected = $selectedMaterialId === $material->id)
 
-                        <td class="px-2 py-1 border-l-4 {{ $isSelected ? 'border-blue-500' : 'border-transparent' }}">{{ $material->code }}</td>
+                        <td class="px-2 py-1 border-l-4 {{ $isSelected ? 'border-blue-500' : 'border-transparent' }}"><span class="font-mono">{{ $material->code }}</span></td>
                         <td class="px-2 py-1">{{ $material->dimensions }}</td>
                         <td class="px-2 py-1">{{ $material->printed }}</td>
                         <td class="px-2 py-1 {{ $isSelected ? 'bg-blue-50' : '' }}">{{ $material->name }}</td>
@@ -216,6 +258,22 @@
                         </td>
                         <td class="px-3 py-2 text-right">
                             <div class="inline-flex items-center gap-1">
+                                {{-- BOM link for finished materials --}}
+                                @if ($material->material_type === 'finished')
+                                    <a
+                                        href="/bom/{{ $material->id }}"
+                                        wire:navigate.stop
+                                        class="p-1.5 rounded text-blue-500 hover:text-blue-800 hover:bg-blue-50"
+                                        title="Edit BOM"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter">
+                                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                                            <rect x="9" y="3" width="6" height="4" rx="1"/>
+                                            <path d="M9 12h6M9 16h4"/>
+                                        </svg>
+                                    </a>
+                                @endif
+
                                 {{-- Edit --}}
                                 <button
                                     wire:click.stop="edit({{ $material->id }})"

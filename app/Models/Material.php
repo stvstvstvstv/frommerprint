@@ -10,14 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Material extends Model
 {
     protected $fillable = [
+        'saga_id',
         'code',
         'name',
         'material_type',
         'unit_id',
         'active',
+        'width',
+        'length',
+        'gsm',
+        'diameter',
         'price',
         'currency_id',
-        'currency',
         'pricing_unit_id',
         'pricing_per',
     ];

@@ -9,12 +9,13 @@ use App\Models\Bom;
  *
  * Paper and ink costs are derived geometrically from the yield rule and
  * material dimensions. BOM items cover only non-geometric components
- * (machine time, tubes, graphic artwork, misc).
+ * (machine time, graphic artwork, misc).
  */
 class BomCostCalculator
 {
-    // Roles whose cost is now driven by the yield rule, not BOM item quantities.
-    protected const GEOMETRIC_ROLES = ['paper', 'ink', 'jumbo', 'foil', 'box'];
+    // Roles whose cost is driven by the yield rule, not BOM item quantities.
+    // BOM items with these roles are skipped so they aren't counted twice.
+    public const GEOMETRIC_ROLES = ['paper', 'ink', 'jumbo', 'tube', 'foil', 'box'];
 
     protected Bom $bom;
     protected int $quantity;
@@ -32,12 +33,14 @@ class BomCostCalculator
 
         $paper      = $this->calculatePaperCost($yieldRule, $finished);
         $ink        = $this->calculateInkCost($yieldRule, $finished);
+        $tube       = $this->calculateTubeCost($yieldRule);
         $components = $this->calculateComponentCosts();
         $setup      = $this->calculateSetupCost();
         $packaging  = $this->calculatePackagingCost($yieldRule);
 
         $totalCost = $paper['cost']
             + $ink['cost']
+            + $tube['cost']
             + $components['cost']
             + $setup
             + $packaging['cost'];
@@ -49,6 +52,7 @@ class BomCostCalculator
             'breakdown' => [
                 'paper'      => $paper['breakdown'],
                 'ink'        => $ink['breakdown'],
+                'tube'       => $tube['breakdown'],
                 'components' => $components['breakdown'],
                 'machine'    => $components['machine_breakdown'],
                 'setup'      => $setup,
@@ -141,7 +145,30 @@ class BomCostCalculator
     }
 
     // -------------------------------------------------------------------------
-    // Non-geometric BOM items (machine, tube, graphic, other)
+    // Tube (1 per roll, from yield rule)
+    // -------------------------------------------------------------------------
+
+    protected function calculateTubeCost(mixed $yieldRule): array
+    {
+        if (! $yieldRule?->tubeMaterial) {
+            return ['cost' => 0.0, 'breakdown' => null];
+        }
+
+        $cost = $yieldRule->tubeMaterial->price * $this->quantity;
+
+        return [
+            'cost' => $cost,
+            'breakdown' => [
+                'material'   => $yieldRule->tubeMaterial->name,
+                'quantity'   => $this->quantity,
+                'unit_price' => $yieldRule->tubeMaterial->price,
+                'cost'       => $cost,
+            ],
+        ];
+    }
+
+    // -------------------------------------------------------------------------
+    // Non-geometric BOM items (machine, graphic, other)
     // -------------------------------------------------------------------------
 
     protected function calculateComponentCosts(): array
