@@ -218,7 +218,7 @@ class ProductionOrderCreate extends Component
 
         $finished = Material::findOrFail($this->finishedMaterialId);
         $jumbo    = Material::findOrFail($this->jumboMaterialId);
-        $this->ensureJumboFits($finished, $jumbo);
+        $this->ensurePaperCostable($finished, $jumbo);
 
         ProductionOrder::create([
             'finished_material_id' => $finished->id,
@@ -243,12 +243,16 @@ class ProductionOrderCreate extends Component
         $this->redirect(route('production-orders.index'));
     }
 
-    private function ensureJumboFits(Material $finished, Material $jumbo): void
+    /** Refuse to save an order whose paper cost can't be calculated. */
+    private function ensurePaperCostable(Material $finished, Material $jumbo): void
     {
-        if (ProductionOrder::jumboTooNarrow($finished, $jumbo)) {
-            throw ValidationException::withMessages([
-                'jumboMaterialId' => ProductionOrder::jumboTooNarrowMessage($finished, $jumbo),
-            ]);
+        $errors = ProductionOrder::paperErrors($finished, $jumbo);
+
+        if ($errors) {
+            throw ValidationException::withMessages(array_filter([
+                'finishedMaterialId' => $errors['finished'] ?? null,
+                'jumboMaterialId'    => $errors['jumbo'] ?? null,
+            ]));
         }
     }
 

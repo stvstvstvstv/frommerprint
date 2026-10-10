@@ -82,6 +82,7 @@ return [
     ],
 
     'jumbo_too_narrow' => 'Rola jumbo (:jumbo_width mm) este mai îngustă decât rola finită (:finished_width mm). Alegeți un jumbo mai lat.',
+    'missing_dimensions' => 'Date lipsă: :fields. Completați mai întâi valorile în ecranul Materiale.',
     'cannot_start'     => 'Comanda #:id nu poate fi pornită.',
 
     'statuses' => [

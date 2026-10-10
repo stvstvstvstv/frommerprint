@@ -60,6 +60,14 @@ return [
 
     'jumbo_too_narrow' => 'Rola jumbo :jumbo (:jumbo_width mm) este mai îngustă decât rola finită (:finished_width mm), deci nu se pot tăia role din ea. Costul hârtiei nu este inclus în total.',
 
+    'missing_dimensions' => 'Date lipsă: :fields. Costul hârtiei nu poate fi calculat și nu este inclus în total. Completați valorile în ecranul Materiale.',
+
+    'dimensions' => [
+        'finished_width'  => 'lățimea rolei finite',
+        'finished_length' => 'lungimea rolei finite',
+        'jumbo_width'     => 'lățimea rolei jumbo',
+    ],
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Hârtie',

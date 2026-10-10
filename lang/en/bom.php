@@ -60,6 +60,14 @@ return [
 
     'jumbo_too_narrow' => 'Jumbo :jumbo (:jumbo_width mm) is narrower than the finished roll (:finished_width mm), so no rolls can be cut from it. Paper cost is not included in the total.',
 
+    'missing_dimensions' => 'Missing: :fields. Paper cost can\'t be calculated and is not included in the total. Add the values on the Materials screen.',
+
+    'dimensions' => [
+        'finished_width'  => 'finished roll width',
+        'finished_length' => 'finished roll length',
+        'jumbo_width'     => 'jumbo width',
+    ],
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Paper',

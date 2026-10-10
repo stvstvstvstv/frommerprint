@@ -67,25 +67,51 @@ class BomCostCalculator
     // Paper (geometric)
     // -------------------------------------------------------------------------
 
+    /**
+     * Why paper cost can't be calculated for this finished roll and jumbo,
+     * or null when it can. Production orders use this to refuse saving.
+     *
+     * @return array{code: 'missing_dimensions'|'jumbo_too_narrow', missing: list<string>}|null
+     */
+    public static function paperProblem(mixed $finished, mixed $jumbo): ?array
+    {
+        $missing = [];
+        if (! ($finished->width > 0))  $missing[] = 'finished_width';
+        if (! ($finished->length > 0)) $missing[] = 'finished_length';
+        if (! ($jumbo->width > 0))     $missing[] = 'jumbo_width';
+
+        if ($missing) {
+            return ['code' => 'missing_dimensions', 'missing' => $missing];
+        }
+
+        // Not even one finished-width strip fits across the jumbo
+        if ($jumbo->width < $finished->width) {
+            return ['code' => 'jumbo_too_narrow', 'missing' => []];
+        }
+
+        return null;
+    }
+
     protected function calculatePaperCost(mixed $yieldRule, mixed $finished): array
     {
-        if (! $yieldRule?->preferredJumboMaterial || ! $finished->width || ! $finished->length) {
+        if (! $yieldRule?->preferredJumboMaterial) {
             return ['cost' => 0.0, 'breakdown' => null];
         }
 
         $jumbo = $yieldRule->preferredJumboMaterial;
 
-        // Rolls cut per shaft pass (how many finished-width strips fit across the jumbo)
-        $rollsPerShaft = (int) floor($jumbo->width / $finished->width);
-
-        if ($rollsPerShaft <= 0) {
+        if ($problem = self::paperProblem($finished, $jumbo)) {
             return ['cost' => 0.0, 'breakdown' => [
-                'error'             => 'jumbo_too_narrow',
+                'error'             => $problem['code'],
+                'missing'           => $problem['missing'],
                 'jumbo'             => $jumbo->name,
                 'jumbo_width_mm'    => $jumbo->width,
                 'finished_width_mm' => $finished->width,
             ]];
         }
+
+        // Rolls cut per shaft pass (how many finished-width strips fit across the jumbo)
+        $rollsPerShaft = (int) floor($jumbo->width / $finished->width);
 
         // Number of shaft passes required for the full order
         $shafts = (int) ceil($this->quantity / $rollsPerShaft);

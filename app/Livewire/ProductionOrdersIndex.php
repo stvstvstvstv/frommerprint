@@ -33,9 +33,10 @@ class ProductionOrdersIndex extends Component
         $finished = Material::find($order->finished_material_id);
         $jumbo    = Material::find($order->jumbo_material_id);
 
-        if (ProductionOrder::jumboTooNarrow($finished, $jumbo)) {
-            session()->flash('error', __('orders.cannot_start', ['id' => $id]) . ' '
-                . ProductionOrder::jumboTooNarrowMessage($finished, $jumbo));
+        $paperErrors = ($finished && $jumbo) ? ProductionOrder::paperErrors($finished, $jumbo) : [];
+
+        if ($paperErrors) {
+            session()->flash('error', __('orders.cannot_start', ['id' => $id]) . ' ' . implode(' ', $paperErrors));
             return;
         }
 

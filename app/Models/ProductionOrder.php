@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BomCostCalculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -65,22 +66,43 @@ class ProductionOrder extends Model
     public function isCancelled(): bool    { return $this->status === self::STATUS_CANCELLED; }
 
     /**
-     * True when the finished roll is wider than the jumbo, so no rolls can
-     * be cut from it (the cost calculator then has no paper cost).
+     * Translated reasons an order can't be costed for paper (missing
+     * dimensions, or a jumbo narrower than the roll), keyed by the side at
+     * fault: 'finished' and/or 'jumbo'. Empty when paper cost can be
+     * calculated. Saving and starting orders is refused while non-empty.
+     *
+     * @return array<'finished'|'jumbo', string>
      */
-    public static function jumboTooNarrow(?Material $finished, ?Material $jumbo): bool
+    public static function paperErrors(Material $finished, Material $jumbo): array
     {
-        return $finished?->width > 0
-            && $jumbo?->width > 0
-            && $jumbo->width < $finished->width;
-    }
+        $problem = BomCostCalculator::paperProblem($finished, $jumbo);
 
-    public static function jumboTooNarrowMessage(Material $finished, Material $jumbo): string
-    {
-        return __('orders.jumbo_too_narrow', [
-            'jumbo_width'    => $jumbo->width,
-            'finished_width' => $finished->width,
+        if (! $problem) {
+            return [];
+        }
+
+        if ($problem['code'] === 'jumbo_too_narrow') {
+            return ['jumbo' => __('orders.jumbo_too_narrow', [
+                'jumbo_width'    => $jumbo->width,
+                'finished_width' => $finished->width,
+            ])];
+        }
+
+        $missingMessage = fn (array $fields) => __('orders.missing_dimensions', [
+            'fields' => collect($fields)->map(fn ($field) => __('bom.dimensions.' . $field))->join(', '),
         ]);
+
+        $errors   = [];
+        $finishedMissing = array_values(array_diff($problem['missing'], ['jumbo_width']));
+
+        if ($finishedMissing) {
+            $errors['finished'] = $missingMessage($finishedMissing);
+        }
+        if (in_array('jumbo_width', $problem['missing'], true)) {
+            $errors['jumbo'] = $missingMessage(['jumbo_width']);
+        }
+
+        return $errors;
     }
 
     public function statusLabel(): string
