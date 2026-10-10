@@ -13,5 +13,6 @@ return [
     'currency'        => 'Currency',
     'date'            => 'Date',
     'rate'            => 'Rate',
+    'rate_saved'      => 'Rate saved.',
 
 ];

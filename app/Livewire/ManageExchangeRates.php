@@ -31,6 +31,8 @@ class ManageExchangeRates extends Component
         );
 
         $this->rate = '';
+
+        session()->flash('status', __('currencies.rate_saved'));
     }
 
     public function render()

@@ -13,5 +13,6 @@ return [
     'currency'        => 'Monedă',
     'date'            => 'Data',
     'rate'            => 'Curs',
+    'rate_saved'      => 'Cursul a fost salvat.',
 
 ];
