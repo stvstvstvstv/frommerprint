@@ -58,6 +58,8 @@ return [
     'save'             => 'Salvează BOM',
     'saved'            => 'BOM salvat cu succes.',
 
+    'jumbo_too_narrow' => 'Rola jumbo :jumbo (:jumbo_width mm) este mai îngustă decât rola finită (:finished_width mm), deci nu se pot tăia role din ea. Costul hârtiei nu este inclus în total.',
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Hârtie',

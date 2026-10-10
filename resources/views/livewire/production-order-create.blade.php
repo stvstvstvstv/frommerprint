@@ -171,7 +171,9 @@
             @else
 
                 {{-- Paper --}}
-                @if ($costPreview['breakdown']['paper'] ?? null)
+                @if ($costPreview['breakdown']['paper']['error'] ?? null)
+                    <x-jumbo-too-narrow :paper="$costPreview['breakdown']['paper']" />
+                @elseif ($costPreview['breakdown']['paper'] ?? null)
                     @php $p = $costPreview['breakdown']['paper']; @endphp
                     <div>
                         <h4 class="text-sm font-medium text-gray-600 mb-1">{{ __('orders.form.paper') }}</h4>

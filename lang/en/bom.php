@@ -58,6 +58,8 @@ return [
     'save'             => 'Save BOM',
     'saved'            => 'BOM saved successfully.',
 
+    'jumbo_too_narrow' => 'Jumbo :jumbo (:jumbo_width mm) is narrower than the finished roll (:finished_width mm), so no rolls can be cut from it. Paper cost is not included in the total.',
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Paper',

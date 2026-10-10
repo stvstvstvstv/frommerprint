@@ -79,7 +79,12 @@ class BomCostCalculator
         $rollsPerShaft = (int) floor($jumbo->width / $finished->width);
 
         if ($rollsPerShaft <= 0) {
-            return ['cost' => 0.0, 'breakdown' => ['error' => 'Finished roll wider than jumbo']];
+            return ['cost' => 0.0, 'breakdown' => [
+                'error'             => 'jumbo_too_narrow',
+                'jumbo'             => $jumbo->name,
+                'jumbo_width_mm'    => $jumbo->width,
+                'finished_width_mm' => $finished->width,
+            ]];
         }
 
         // Number of shaft passes required for the full order

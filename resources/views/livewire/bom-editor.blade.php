@@ -50,7 +50,11 @@
                 </select>
             </div>
 
-            @if ($costPreview['breakdown']['paper'] ?? null)
+            @if ($costPreview['breakdown']['paper']['error'] ?? null)
+                <div class="flex items-end pb-1">
+                    <x-jumbo-too-narrow :paper="$costPreview['breakdown']['paper']" />
+                </div>
+            @elseif ($costPreview['breakdown']['paper'] ?? null)
                 @php $pb = $costPreview['breakdown']['paper']; @endphp
                 <div class="text-xs text-gray-500 flex items-end pb-1 space-x-3">
                     <span>{{ __('bom.rolls_per_shaft') }}: <strong>{{ $pb['rolls_per_shaft'] }}</strong></span>
@@ -230,7 +234,9 @@
         </div>
 
         {{-- Paper --}}
-        @if ($costPreview['breakdown']['paper'] ?? null)
+        @if ($costPreview['breakdown']['paper']['error'] ?? null)
+            <x-jumbo-too-narrow :paper="$costPreview['breakdown']['paper']" />
+        @elseif ($costPreview['breakdown']['paper'] ?? null)
             @php $p = $costPreview['breakdown']['paper']; @endphp
             <div>
                 <h4 class="font-semibold text-sm mb-1">{{ __('bom.paper') }}</h4>
