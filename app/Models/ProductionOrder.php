@@ -105,6 +105,18 @@ class ProductionOrder extends Model
         return $errors;
     }
 
+    /**
+     * Message for cost results whose 'problems' list materials that could
+     * not be priced. An order with such problems can't be started, since
+     * the frozen total would leave those materials out.
+     */
+    public static function unpricedMessage(array $problems): string
+    {
+        return __('orders.unpriced_materials', [
+            'materials' => collect($problems)->pluck('material')->unique()->join(', '),
+        ]);
+    }
+
     public function statusLabel(): string
     {
         return __('orders.statuses.' . $this->status);

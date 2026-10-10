@@ -97,7 +97,7 @@
 
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.planned_qty') }}</label>
-                    <input type="number" min="1" wire:model.live="plannedRolls"
+                    <input type="number" min="1" wire:model.live.number="plannedRolls"
                            class="w-full border rounded px-2 py-1 text-sm">
                     @error('plannedRolls') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -125,9 +125,10 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.ink_kg_m2') }}</label>
                         <input type="number" step="0.000001" min="0"
-                               wire:model.live="overrideInkKgPerM2"
+                               wire:model.live.number="overrideInkKgPerM2"
                                placeholder="{{ __('orders.form.from_bom') }}"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideInkKgPerM2') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div></div>
                 </div>
@@ -136,14 +137,16 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_foil') }}</label>
                         <input type="number" step="1" min="0"
-                               wire:model.live="overrideFoilPerRoll"
+                               wire:model.live.number="overrideFoilPerRoll"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideFoilPerRoll') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_box') }}</label>
                         <input type="number" step="1" min="0"
-                               wire:model.live="overrideRollsPerBox"
+                               wire:model.live.number="overrideRollsPerBox"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideRollsPerBox') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>
@@ -170,6 +173,8 @@
                 <p class="text-sm text-gray-400 italic">{{ __('orders.form.preview_hint_create') }}</p>
             @else
 
+                <x-cost-problems :problems="$costPreview['problems'] ?? []" />
+
                 {{-- Paper --}}
                 @if ($costPreview['breakdown']['paper']['error'] ?? null)
                     <x-paper-cost-problem :paper="$costPreview['breakdown']['paper']" />
@@ -183,7 +188,7 @@
                                 <tr><td class="text-gray-500">{{ __('orders.form.rolls_per_shaft') }}</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
                                 <tr><td class="text-gray-500">{{ __('orders.form.shafts') }}</td><td>{{ $p['shafts'] }}</td></tr>
                                 <tr><td class="text-gray-500">{{ __('orders.form.net_area') }}</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
-                                <tr><td class="text-gray-500">{{ __('orders.form.price_per_m2') }}</td><td>{{ number_format($p['price_per_m2'], 4) }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.price_per_m2') }}</td><td>{{ ($p['price_per_m2'] === null ? '—' : number_format($p['price_per_m2'], 4)) }}</td></tr>
                                 <tr class="font-semibold border-t"><td>{{ __('orders.form.paper_cost') }}</td><td>{{ number_format($p['cost'], 2) }}</td></tr>
                             </tbody>
                         </table>
@@ -242,6 +247,10 @@
                         </table>
                     </div>
                 @endif
+
+                @isset($costPreview['currency'])
+                    <p class="text-xs text-gray-400">{{ __('bom.currency_note', ['currency' => $costPreview['currency'], 'date' => $costPreview['price_date']]) }}</p>
+                @endisset
 
                 {{-- Totals --}}
                 <div class="border-t pt-3 space-y-1">

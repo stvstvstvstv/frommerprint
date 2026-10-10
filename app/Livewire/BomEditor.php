@@ -12,7 +12,9 @@ class BomEditor extends Component
 {
     public Bom $bom;
 
-    public int $previewQuantity = 24;
+    // Nullable with a null default so an emptied box stays empty (see
+    // ProductionOrderCreate); the starting value is set in mount().
+    public ?int $previewQuantity = null;
 
     /** Non-geometric BOM items (machine, graphic, other) */
     public array $items = [];
@@ -42,6 +44,8 @@ class BomEditor extends Component
     public function mount(Material $material)
     {
         abort_if($material->material_type !== 'finished', 404);
+
+        $this->previewQuantity = 24;
 
         $bom = $material->bomAsFinished()->firstOrCreate(
             ['finished_material_id' => $material->id],
@@ -128,6 +132,12 @@ class BomEditor extends Component
 
     public function recalculate(): void
     {
+        // Preview quantity box emptied or zero: nothing to cost yet
+        if (($this->previewQuantity ?? 0) < 1) {
+            $this->costPreview = [];
+            return;
+        }
+
         $bom = Bom::with([
             'items.componentMaterial',
             'yieldRule.preferredJumboMaterial',

@@ -60,7 +60,7 @@
                     <span>{{ __('bom.rolls_per_shaft') }}: <strong>{{ $pb['rolls_per_shaft'] }}</strong></span>
                     <span>{{ __('bom.shafts') }}: <strong>{{ $pb['shafts'] }}</strong></span>
                     <span>{{ __('bom.net_area') }}: <strong>{{ $pb['net_area_m2'] }} m²</strong></span>
-                    <span>{{ __('bom.price_per_m2') }}: <strong>{{ number_format($pb['price_per_m2'], 4) }}</strong></span>
+                    <span>{{ __('bom.price_per_m2') }}: <strong>{{ ($pb['price_per_m2'] === null ? '—' : number_format($pb['price_per_m2'], 4)) }}</strong></span>
                 </div>
             @endif
         </div>
@@ -226,12 +226,14 @@
                 <input
                     type="number"
                     min="1"
-                    wire:model.live="previewQuantity"
+                    wire:model.live.number="previewQuantity"
                     wire:change="recalculate"
                     class="w-20 border rounded px-2 py-1 text-sm"
                 >
             </div>
         </div>
+
+        <x-cost-problems :problems="$costPreview['problems'] ?? []" />
 
         {{-- Paper --}}
         @if ($costPreview['breakdown']['paper']['error'] ?? null)
@@ -248,7 +250,7 @@
                         <tr><td class="text-gray-500">{{ __('bom.gross_area') }}</td><td>{{ $p['gross_area_m2'] }} m²</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.waste') }}</td><td>{{ $p['waste_pct'] }} %</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.net_area') }}</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
-                        <tr><td class="text-gray-500">{{ __('bom.price_per_m2') }}</td><td>{{ number_format($p['price_per_m2'], 6) }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.price_per_m2') }}</td><td>{{ ($p['price_per_m2'] === null ? '—' : number_format($p['price_per_m2'], 6)) }}</td></tr>
                         <tr class="font-semibold border-t"><td>{{ __('bom.paper_cost') }}</td><td>{{ number_format($p['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
@@ -266,7 +268,7 @@
                         <tr><td class="text-gray-500">{{ __('bom.roll_area') }}</td><td>{{ $ink['roll_area_m2'] }} m²</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.kg_per_m2') }}</td><td>{{ $ink['ink_kg_per_m2'] }}</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.kg_per_roll') }}</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
-                        <tr><td class="text-gray-500">{{ __('bom.price_per_kg') }}</td><td>{{ number_format($ink['unit_price'], 4) }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.price_per_kg') }}</td><td>{{ ($ink['unit_price'] === null ? '—' : number_format($ink['unit_price'], 4)) }}</td></tr>
                         <tr class="font-semibold border-t"><td>{{ __('bom.ink_cost') }}</td><td>{{ number_format($ink['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
@@ -282,7 +284,7 @@
                     <tbody>
                         <tr><td class="text-gray-500 w-40">{{ __('bom.material') }}</td><td>{{ $tube['material'] }}</td></tr>
                         <tr><td class="text-gray-500">{{ __('bom.qty') }}</td><td>{{ number_format($tube['quantity']) }}</td></tr>
-                        <tr><td class="text-gray-500">{{ __('bom.unit_price') }}</td><td>{{ number_format($tube['unit_price'], 4) }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.unit_price') }}</td><td>{{ ($tube['unit_price'] === null ? '—' : number_format($tube['unit_price'], 4)) }}</td></tr>
                         <tr class="font-semibold border-t"><td>{{ __('bom.tube_cost') }}</td><td>{{ number_format($tube['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
@@ -312,7 +314,7 @@
                             <tr class="border-t">
                                 <td>{{ $row['material'] }}</td>
                                 <td class="text-right">{{ number_format($row['quantity'], 2) }} ({{ $hours }}h {{ $mins }}m)</td>
-                                <td class="text-right">{{ number_format($row['unit_price'], 2) }}</td>
+                                <td class="text-right">{{ ($row['unit_price'] === null ? '—' : number_format($row['unit_price'], 2)) }}</td>
                                 <td class="text-right">{{ number_format($row['cost'], 2) }}</td>
                             </tr>
                         @endforeach
@@ -341,7 +343,7 @@
                                 <td>{{ $row['material'] }}</td>
                                 <td>{{ __('bom.roles.' . $row['role']) }}</td>
                                 <td class="text-right">{{ number_format($row['quantity'], 4) }}</td>
-                                <td class="text-right">{{ number_format($row['unit_price'], 4) }}</td>
+                                <td class="text-right">{{ ($row['unit_price'] === null ? '—' : number_format($row['unit_price'], 4)) }}</td>
                                 <td class="text-right">{{ number_format($row['cost'], 4) }}</td>
                             </tr>
                         @endforeach
@@ -375,7 +377,7 @@
                             <tr class="border-t">
                                 <td>{{ $row['material'] }}</td>
                                 <td class="text-right">{{ $row['quantity'] }}</td>
-                                <td class="text-right">{{ number_format($row['unit_price'], 4) }}</td>
+                                <td class="text-right">{{ ($row['unit_price'] === null ? '—' : number_format($row['unit_price'], 4)) }}</td>
                                 <td class="text-right">{{ number_format($row['cost'], 4) }}</td>
                             </tr>
                         @endforeach
@@ -383,6 +385,10 @@
                 </table>
             </div>
         @endif
+
+        @isset($costPreview['currency'])
+            <p class="text-xs text-gray-400">{{ __('bom.currency_note', ['currency' => $costPreview['currency'], 'date' => $costPreview['price_date']]) }}</p>
+        @endisset
 
         {{-- Totals --}}
         <div class="border-t pt-2 space-y-1 text-sm">
