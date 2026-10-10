@@ -34,7 +34,9 @@ class MaterialsTable extends Component
     public ?float $price = null;
     public ?int $currencyId = null;
     public ?int $pricingUnitId = null;
-    public int $pricingPer = 1;
+    // Nullable with a null default so an emptied box stays empty (see
+    // ProductionOrderCreate); resetForm() sets 1 when the form opens.
+    public ?int $pricingPer = null;
 
     // Form state
     public ?int $editingId = null;

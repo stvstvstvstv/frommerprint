@@ -98,7 +98,7 @@
 
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.planned_qty') }}</label>
-                    <input type="number" min="1" wire:model.live="plannedRolls"
+                    <input type="number" min="1" wire:model.live.number="plannedRolls"
                            class="w-full border rounded px-2 py-1 text-sm">
                     @error('plannedRolls') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -121,9 +121,10 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.ink_kg_m2') }}</label>
                         <input type="number" step="0.000001" min="0"
-                               wire:model.live="overrideInkKgPerM2"
+                               wire:model.live.number="overrideInkKgPerM2"
                                placeholder="{{ __('orders.form.from_bom') }}"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideInkKgPerM2') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div></div>
                 </div>
@@ -132,14 +133,16 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_foil') }}</label>
                         <input type="number" step="1" min="0"
-                               wire:model.live="overrideFoilPerRoll"
+                               wire:model.live.number="overrideFoilPerRoll"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideFoilPerRoll') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_box') }}</label>
                         <input type="number" step="1" min="0"
-                               wire:model.live="overrideRollsPerBox"
+                               wire:model.live.number="overrideRollsPerBox"
                                class="w-full border rounded px-2 py-1 text-sm">
+                        @error('overrideRollsPerBox') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>

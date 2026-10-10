@@ -226,7 +226,7 @@
                 <input
                     type="number"
                     min="1"
-                    wire:model.live="previewQuantity"
+                    wire:model.live.number="previewQuantity"
                     wire:change="recalculate"
                     class="w-20 border rounded px-2 py-1 text-sm"
                 >

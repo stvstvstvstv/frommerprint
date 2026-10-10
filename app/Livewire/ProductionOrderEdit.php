@@ -24,11 +24,15 @@ class ProductionOrderEdit extends Component
     public ?array  $selectedFinishedDims  = null;
 
     public ?int   $jumboMaterialId     = null;
-    public int    $plannedRolls        = 1;
+    // Numeric inputs bound with wire:model.number are nullable with a null
+    // default: an emptied box arrives as null, and Livewire never restores a
+    // typed property to null, so a non-null default would reappear. Starting
+    // values are set in mount().
+    public ?int    $plannedRolls        = null;
     public string $client              = '';
     public ?float $overrideInkKgPerM2  = null;
-    public int    $overrideFoilPerRoll = 0;
-    public int    $overrideRollsPerBox = 0;
+    public ?int    $overrideFoilPerRoll = null;
+    public ?int    $overrideRollsPerBox = null;
 
     public array   $costPreview  = [];
     public array   $jumboOptions = [];
@@ -225,8 +229,8 @@ class ProductionOrderEdit extends Component
             'plannedRolls'        => 'required|integer|min:1',
             'client'              => 'nullable|string|max:255',
             'overrideInkKgPerM2'  => 'nullable|numeric|min:0',
-            'overrideFoilPerRoll' => 'required|integer|min:0',
-            'overrideRollsPerBox' => 'required|integer|min:0',
+            'overrideFoilPerRoll' => 'nullable|integer|min:0',
+            'overrideRollsPerBox' => 'nullable|integer|min:0',
         ];
     }
 
@@ -250,8 +254,8 @@ class ProductionOrderEdit extends Component
             'snapshot_jumbo_gsm'         => $jumbo->gsm,
             'snapshot_jumbo_cost_per_m'  => $jumbo->price,
             'override_ink_kg_per_m2'     => $this->overrideInkKgPerM2,
-            'override_foil_per_roll'     => $this->overrideFoilPerRoll,
-            'override_rolls_per_box'     => $this->overrideRollsPerBox,
+            'override_foil_per_roll'     => $this->overrideFoilPerRoll ?? 0,
+            'override_rolls_per_box'     => $this->overrideRollsPerBox ?? 0,
         ]);
 
         session()->flash('status', __('orders.updated', ['id' => $this->order->id]));
@@ -287,8 +291,8 @@ class ProductionOrderEdit extends Component
             'snapshot_jumbo_gsm'         => $jumbo->gsm,
             'snapshot_jumbo_cost_per_m'  => $jumbo->price,
             'override_ink_kg_per_m2'     => $this->overrideInkKgPerM2,
-            'override_foil_per_roll'     => $this->overrideFoilPerRoll,
-            'override_rolls_per_box'     => $this->overrideRollsPerBox,
+            'override_foil_per_roll'     => $this->overrideFoilPerRoll ?? 0,
+            'override_rolls_per_box'     => $this->overrideRollsPerBox ?? 0,
             'status'                     => ProductionOrder::STATUS_IN_PRODUCTION,
             'confirmed_total_cost'       => $this->costPreview['total_cost'] ?? null,
             'started_at'                 => now(),

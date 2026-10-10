@@ -137,7 +137,7 @@
                 </div>
                 <div class="col-span-2">
                     <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.pricing_per') }}</label>
-                    <input type="number" wire:model.live="pricingPer" class="w-full rounded border-gray-300 text-sm" />
+                    <input type="number" wire:model.live.number="pricingPer" class="w-full rounded border-gray-300 text-sm" />
                 </div>
                 <div class="col-span-4">
                     <label class="block text-xs text-gray-500 mb-1">{{ __('materials.fields.pricing_unit') }}</label>
