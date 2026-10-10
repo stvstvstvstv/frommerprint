@@ -2,10 +2,10 @@
 
     <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-800">
-            Edit Draft Order <span class="text-gray-400 font-normal">#{{ $order->id }}</span>
+            {{ __('orders.form.edit_title') }} <span class="text-gray-400 font-normal">#{{ $order->id }}</span>
         </h2>
         <a href="{{ route('production-orders.index') }}" class="text-sm text-gray-500 hover:text-gray-700">
-            &larr; Back to orders
+            &larr; {{ __('orders.form.back') }}
         </a>
     </div>
 
@@ -24,10 +24,10 @@
 
             {{-- Product --}}
             <div class="bg-white p-4 rounded shadow space-y-4">
-                <h3 class="font-semibold text-gray-700">Product</h3>
+                <h3 class="font-semibold text-gray-700">{{ __('orders.form.product') }}</h3>
 
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Finished Material</label>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.finished_material') }}</label>
 
                     @if ($finishedMaterialId)
                         <div class="flex items-center gap-2 border rounded px-2 py-1 bg-gray-50">
@@ -37,7 +37,7 @@
                             @endif
                             <button wire:click="clearFinishedMaterial"
                                     class="text-gray-400 hover:text-red-500 text-xs leading-none"
-                                    title="Clear selection">&times;</button>
+                                    title="{{ __('orders.form.clear_selection') }}">&times;</button>
                         </div>
                         @if ($selectedFinishedDims)
                             <div class="text-xs text-gray-400 mt-1 flex gap-3">
@@ -53,7 +53,7 @@
                                 wire:model.live.debounce.200ms="finishedSearch"
                                 wire:focus="openFinishedDropdown"
                                 wire:keydown.escape="closeFinishedDropdown"
-                                placeholder="Click or type to search…"
+                                placeholder="{{ __('orders.form.search_placeholder') }}"
                                 autocomplete="off"
                                 class="w-full border rounded px-2 py-1 text-sm"
                             >
@@ -74,7 +74,7 @@
                                             </div>
                                         </button>
                                     @empty
-                                        <div class="px-3 py-2 text-sm text-gray-400 italic">No results.</div>
+                                        <div class="px-3 py-2 text-sm text-gray-400 italic">{{ __('orders.form.no_results') }}</div>
                                     @endforelse
                                 </div>
                             @endif
@@ -87,27 +87,27 @@
 
             {{-- Editable fields --}}
             <div class="bg-white p-4 rounded shadow space-y-4">
-                <h3 class="font-semibold text-gray-700">Materials &amp; Quantity</h3>
+                <h3 class="font-semibold text-gray-700">{{ __('orders.form.materials_qty') }}</h3>
 
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Client</label>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.client') }}</label>
                     <input type="text" wire:model.live="client"
-                           class="w-full border rounded px-2 py-1 text-sm" placeholder="Customer name">
+                           class="w-full border rounded px-2 py-1 text-sm" placeholder="{{ __('orders.form.client_placeholder') }}">
                     @error('client') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Planned Quantity (rolls)</label>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.planned_qty') }}</label>
                     <input type="number" min="1" wire:model.live="plannedRolls"
                            class="w-full border rounded px-2 py-1 text-sm">
                     @error('plannedRolls') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Jumbo Roll</label>
+                    <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.jumbo_roll') }}</label>
                     <select wire:model.live="jumboMaterialId"
                             class="w-full border rounded px-2 py-1 text-sm">
-                        <option value="">— select jumbo —</option>
+                        <option value="">{{ __('orders.form.select_jumbo') }}</option>
                         @foreach ($jumboOptions as $m)
                             <option value="{{ $m['id'] }}">
                                 {{ $m['name'] }}{{ $m['width'] ? ' (' . $m['width'] . ' mm' . ($m['gsm'] ? ', ' . $m['gsm'] . ' gsm' : '') . ')' : '' }}
@@ -119,10 +119,10 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Ink kg / m²</label>
+                        <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.ink_kg_m2') }}</label>
                         <input type="number" step="0.000001" min="0"
                                wire:model.live="overrideInkKgPerM2"
-                               placeholder="from BOM"
+                               placeholder="{{ __('orders.form.from_bom') }}"
                                class="w-full border rounded px-2 py-1 text-sm">
                     </div>
                     <div></div>
@@ -130,13 +130,13 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Rolls per Foil Wrap</label>
+                        <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_foil') }}</label>
                         <input type="number" step="1" min="0"
                                wire:model.live="overrideFoilPerRoll"
                                class="w-full border rounded px-2 py-1 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Rolls per Box</label>
+                        <label class="block text-xs text-gray-500 mb-1">{{ __('orders.form.rolls_per_box') }}</label>
                         <input type="number" step="1" min="0"
                                wire:model.live="overrideRollsPerBox"
                                class="w-full border rounded px-2 py-1 text-sm">
@@ -147,12 +147,12 @@
             <div class="flex justify-end gap-3">
                 <button wire:click="save"
                         class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
-                    Save Changes
+                    {{ __('orders.form.save_changes') }}
                 </button>
                 <button wire:click="confirmOrder"
-                        wire:confirm="Move order #{{ $order->id }} to In Production? This will freeze the cost."
+                        wire:confirm="{{ __('orders.confirm_start', ['id' => $order->id]) }}"
                         class="px-6 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 text-sm font-medium">
-                    → In Production
+                    → {{ __('orders.statuses.in_production') }}
                 </button>
             </div>
         </div>
@@ -161,29 +161,29 @@
         {{-- RIGHT: Cost Preview                                               --}}
         {{-- ---------------------------------------------------------------- --}}
         <div class="bg-gray-50 p-4 rounded shadow space-y-4">
-            <h3 class="font-semibold text-gray-700">Cost Preview
+            <h3 class="font-semibold text-gray-700">{{ __('orders.form.cost_preview') }}
                 @if($plannedRolls > 0)
-                    <span class="font-normal text-gray-400 text-sm">— {{ number_format($plannedRolls) }} rolls</span>
+                    <span class="font-normal text-gray-400 text-sm">— {{ __('orders.form.rolls_count', ['count' => number_format($plannedRolls)]) }}</span>
                 @endif
             </h3>
 
             @if (empty($costPreview))
-                <p class="text-sm text-gray-400 italic">Select a jumbo to see cost estimate.</p>
+                <p class="text-sm text-gray-400 italic">{{ __('orders.form.preview_hint_edit') }}</p>
             @else
 
                 {{-- Paper --}}
                 @if ($costPreview['breakdown']['paper'] ?? null)
                     @php $p = $costPreview['breakdown']['paper']; @endphp
                     <div>
-                        <h4 class="text-sm font-medium text-gray-600 mb-1">Paper</h4>
+                        <h4 class="text-sm font-medium text-gray-600 mb-1">{{ __('orders.form.paper') }}</h4>
                         <table class="w-full text-xs border-collapse">
                             <tbody>
-                                <tr><td class="text-gray-500 w-40">Jumbo</td><td>{{ $p['jumbo'] }}</td></tr>
-                                <tr><td class="text-gray-500">Rolls / shaft</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
-                                <tr><td class="text-gray-500">Shafts</td><td>{{ $p['shafts'] }}</td></tr>
-                                <tr><td class="text-gray-500">Net area</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
-                                <tr><td class="text-gray-500">Price / m²</td><td>{{ number_format($p['price_per_m2'], 4) }}</td></tr>
-                                <tr class="font-semibold border-t"><td>Paper cost</td><td>{{ number_format($p['cost'], 2) }}</td></tr>
+                                <tr><td class="text-gray-500 w-40">{{ __('orders.form.jumbo') }}</td><td>{{ $p['jumbo'] }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.rolls_per_shaft') }}</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.shafts') }}</td><td>{{ $p['shafts'] }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.net_area') }}</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.price_per_m2') }}</td><td>{{ number_format($p['price_per_m2'], 4) }}</td></tr>
+                                <tr class="font-semibold border-t"><td>{{ __('orders.form.paper_cost') }}</td><td>{{ number_format($p['cost'], 2) }}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -193,12 +193,12 @@
                 @if ($costPreview['breakdown']['ink'] ?? null)
                     @php $ink = $costPreview['breakdown']['ink']; @endphp
                     <div>
-                        <h4 class="text-sm font-medium text-gray-600 mb-1">Ink</h4>
+                        <h4 class="text-sm font-medium text-gray-600 mb-1">{{ __('orders.form.ink') }}</h4>
                         <table class="w-full text-xs border-collapse">
                             <tbody>
-                                <tr><td class="text-gray-500 w-40">Material</td><td>{{ $ink['material'] }}</td></tr>
-                                <tr><td class="text-gray-500">kg / roll</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
-                                <tr class="font-semibold border-t"><td>Ink cost</td><td>{{ number_format($ink['cost'], 2) }}</td></tr>
+                                <tr><td class="text-gray-500 w-40">{{ __('orders.form.material') }}</td><td>{{ $ink['material'] }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.kg_per_roll') }}</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
+                                <tr class="font-semibold border-t"><td>{{ __('orders.form.ink_cost') }}</td><td>{{ number_format($ink['cost'], 2) }}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -207,10 +207,10 @@
                 {{-- Packaging --}}
                 @if (count($costPreview['breakdown']['packaging'] ?? []) > 0)
                     <div>
-                        <h4 class="text-sm font-medium text-gray-600 mb-1">Packaging</h4>
+                        <h4 class="text-sm font-medium text-gray-600 mb-1">{{ __('orders.form.packaging') }}</h4>
                         <table class="w-full text-xs border-collapse">
                             <thead class="text-gray-500">
-                                <tr><th class="text-left">Material</th><th class="text-right">Qty</th><th class="text-right">Cost</th></tr>
+                                <tr><th class="text-left">{{ __('orders.form.material') }}</th><th class="text-right">{{ __('orders.form.qty') }}</th><th class="text-right">{{ __('orders.form.cost') }}</th></tr>
                             </thead>
                             <tbody>
                                 @foreach ($costPreview['breakdown']['packaging'] as $row)
@@ -228,7 +228,7 @@
                 {{-- Other components --}}
                 @if (count($costPreview['breakdown']['components'] ?? []) > 0)
                     <div>
-                        <h4 class="text-sm font-medium text-gray-600 mb-1">Other Components</h4>
+                        <h4 class="text-sm font-medium text-gray-600 mb-1">{{ __('orders.form.other_components') }}</h4>
                         <table class="w-full text-xs border-collapse">
                             <tbody>
                                 @foreach ($costPreview['breakdown']['components'] as $row)
@@ -245,11 +245,11 @@
                 {{-- Totals --}}
                 <div class="border-t pt-3 space-y-1">
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Unit cost</span>
+                        <span class="text-gray-500">{{ __('orders.form.unit_cost') }}</span>
                         <strong>{{ number_format($costPreview['unit_cost'], 4) }}</strong>
                     </div>
                     <div class="flex justify-between text-base font-semibold">
-                        <span>Total ({{ number_format($plannedRolls) }} rolls)</span>
+                        <span>{{ __('orders.form.total_rolls', ['count' => number_format($plannedRolls)]) }}</span>
                         <span>{{ number_format($costPreview['total_cost'], 2) }}</span>
                     </div>
                 </div>
