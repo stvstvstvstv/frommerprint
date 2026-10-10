@@ -234,7 +234,9 @@ class BomEditor extends Component
 
         $this->hydrateState();
 
-        session()->flash('status', __('bom.saved'));
+        // Shown beside the Save button, which is on screen when it's clicked
+        // (a message at the top of the page is usually scrolled out of view)
+        $this->dispatch('bom-saved');
     }
 
     public function render()

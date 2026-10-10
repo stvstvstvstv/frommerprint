@@ -399,12 +399,17 @@
 
     <div class="flex items-center justify-between mt-6">
         <div class="text-xs text-gray-500">{{ __('bom.not_autosaved') }}</div>
-        <button
-            wire:click="save"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-            {{ __('bom.save') }}
-        </button>
+        <div class="flex items-center gap-3">
+            <x-action-message on="bom-saved" class="text-sm font-medium text-green-700">
+                {{ __('bom.saved') }}
+            </x-action-message>
+            <button
+                wire:click="save"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+                {{ __('bom.save') }}
+            </button>
+        </div>
     </div>
 
 </div>
