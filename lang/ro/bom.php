@@ -40,7 +40,7 @@ return [
     'ink'              => 'Cerneală',
     'roll_area'        => 'Suprafață rolă',
     'kg_per_m2'        => 'kg / m²',
-    'kg_per_roll'      => 'kg / rolă',
+    'g_per_roll'       => 'g / rolă',
     'price_per_kg'     => 'Preț / kg',
     'ink_cost'         => 'Cost cerneală',
     'tube'             => 'Tub',
