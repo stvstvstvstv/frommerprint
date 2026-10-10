@@ -14,6 +14,11 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        {{-- Livewire bundles Alpine; loading it here (not in app.js) keeps a
+             single Alpine on every page, including pages with no Livewire
+             component (profile, nav dropdown) --}}
+        @livewireStyles
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -33,5 +38,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @livewireScripts
     </body>
 </html>
