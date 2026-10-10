@@ -24,7 +24,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             <div class="text-sm text-gray-500">
-                {{ __('Testing hub — every screen in the app is reachable from here.') }}
+                {{ __('dashboard.intro') }}
             </div>
 
             <div class="grid gap-6 lg:grid-cols-2">
@@ -32,13 +32,13 @@
                 {{-- Production orders --}}
                 <section class="{{ $card }}">
                     <div class="flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800">{{ __('Production orders') }}</h3>
-                        <span class="text-xs text-gray-400">{{ $orderCounts->sum() }} {{ __('total') }}</span>
+                        <h3 class="font-semibold text-gray-800">{{ __('dashboard.production_orders') }}</h3>
+                        <span class="text-xs text-gray-400">{{ __('dashboard.total', ['count' => $orderCounts->sum()]) }}</span>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ route('production-orders.create') }}" class="{{ $btn }}">+ {{ __('New order') }}</a>
-                        <a href="{{ route('production-orders.index') }}" class="{{ $btn2 }}">{{ __('All orders') }}</a>
+                        <a href="{{ route('production-orders.create') }}" class="{{ $btn }}">+ {{ __('dashboard.new_order') }}</a>
+                        <a href="{{ route('production-orders.index') }}" class="{{ $btn2 }}">{{ __('dashboard.all_orders') }}</a>
                     </div>
 
                     <div class="flex flex-wrap gap-2 text-sm">
@@ -52,7 +52,7 @@
                     </div>
 
                     <div>
-                        <div class="text-xs uppercase tracking-wide text-gray-400 mb-1">{{ __('Recent') }}</div>
+                        <div class="text-xs uppercase tracking-wide text-gray-400 mb-1">{{ __('dashboard.recent') }}</div>
                         @forelse ($recentOrders as $order)
                             <div class="flex items-center justify-between gap-3 py-1.5 border-t border-gray-100 text-sm">
                                 <div class="min-w-0">
@@ -68,12 +68,12 @@
                                         {{ $order->statusLabel() }}
                                     </span>
                                     @if ($order->isDraft())
-                                        <a href="{{ route('production-orders.edit', $order) }}" class="text-indigo-600 hover:underline">{{ __('Edit') }}</a>
+                                        <a href="{{ route('production-orders.edit', $order) }}" class="text-indigo-600 hover:underline">{{ __('common.edit') }}</a>
                                     @endif
                                 </div>
                             </div>
                         @empty
-                            <div class="text-sm text-gray-400">{{ __('No orders yet.') }}</div>
+                            <div class="text-sm text-gray-400">{{ __('dashboard.no_orders') }}</div>
                         @endforelse
                     </div>
                 </section>
@@ -81,26 +81,26 @@
                 {{-- BOMs & costing --}}
                 <section class="{{ $card }}">
                     <div class="flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800">{{ __('BOMs & costing') }}</h3>
-                        <span class="text-xs text-gray-400">{{ $boms->count() }} {{ __('BOMs') }}</span>
+                        <h3 class="font-semibold text-gray-800">{{ __('dashboard.boms_costing') }}</h3>
+                        <span class="text-xs text-gray-400">{{ __('dashboard.bom_count', ['count' => $boms->count()]) }}</span>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
                         <a href="{{ route('materials.index', ['type' => 'finished']) }}" class="{{ $btn2 }}">
-                            {{ __('Pick a finished product → BOM') }}
+                            {{ __('dashboard.pick_finished') }}
                         </a>
                     </div>
                     <p class="text-xs text-gray-500">
-                        {{ __('Opening the BOM editor for a finished product with no BOM creates an empty one.') }}
+                        {{ __('dashboard.empty_bom_note') }}
                     </p>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead class="text-xs uppercase tracking-wide text-gray-400 text-left">
                                 <tr>
-                                    <th class="py-1 pr-2 font-normal">{{ __('Finished product') }}</th>
-                                    <th class="py-1 pr-2 font-normal">{{ __('Jumbo') }}</th>
-                                    <th class="py-1 pr-2 font-normal text-right">{{ __('Items') }}</th>
+                                    <th class="py-1 pr-2 font-normal">{{ __('dashboard.finished_product') }}</th>
+                                    <th class="py-1 pr-2 font-normal">{{ __('dashboard.jumbo') }}</th>
+                                    <th class="py-1 pr-2 font-normal text-right">{{ __('dashboard.items') }}</th>
                                     <th class="py-1"></th>
                                 </tr>
                             </thead>
@@ -112,14 +112,14 @@
                                         <td class="py-1.5 pr-2 text-right text-gray-500">{{ $bom->items_count }}</td>
                                         <td class="py-1.5 text-right whitespace-nowrap">
                                             @if ($bom->finishedMaterial)
-                                                <a href="{{ route('bom.editor', $bom->finishedMaterial) }}" class="text-indigo-600 hover:underline">{{ __('Cost editor') }}</a>
+                                                <a href="{{ route('bom.editor', $bom->finishedMaterial) }}" class="text-indigo-600 hover:underline">{{ __('dashboard.cost_editor') }}</a>
                                                 <span class="text-gray-300">|</span>
                                             @endif
-                                            <a href="{{ route('bom.items', $bom) }}" class="text-gray-500 hover:underline" title="{{ __('Older structure-only item editor') }}">{{ __('Items (legacy)') }}</a>
+                                            <a href="{{ route('bom.items', $bom) }}" class="text-gray-500 hover:underline" title="{{ __('dashboard.legacy_items_hint') }}">{{ __('dashboard.legacy_items') }}</a>
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="4" class="py-2 text-gray-400">{{ __('No BOMs yet.') }}</td></tr>
+                                    <tr><td colspan="4" class="py-2 text-gray-400">{{ __('dashboard.no_boms') }}</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -129,12 +129,12 @@
                 {{-- Materials --}}
                 <section class="{{ $card }}">
                     <div class="flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800">{{ __('Materials') }}</h3>
-                        <span class="text-xs text-gray-400">{{ $materialCounts->sum() }} {{ __('total') }}</span>
+                        <h3 class="font-semibold text-gray-800">{{ __('dashboard.materials') }}</h3>
+                        <span class="text-xs text-gray-400">{{ __('dashboard.total', ['count' => $materialCounts->sum()]) }}</span>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ route('materials.index') }}" class="{{ $btn }}">{{ __('All materials') }}</a>
+                        <a href="{{ route('materials.index') }}" class="{{ $btn }}">{{ __('dashboard.all_materials') }}</a>
                     </div>
 
                     <div class="flex flex-wrap gap-2 text-sm">
@@ -150,29 +150,29 @@
 
                 {{-- Pricing & admin --}}
                 <section class="{{ $card }}">
-                    <h3 class="font-semibold text-gray-800">{{ __('Pricing & admin') }}</h3>
+                    <h3 class="font-semibold text-gray-800">{{ __('dashboard.pricing_admin') }}</h3>
 
                     <div class="grid gap-3 sm:grid-cols-2 text-sm">
                         <a href="{{ route('admin.currencies') }}" class="block p-3 rounded border border-gray-200 hover:bg-gray-50">
-                            <div class="font-medium text-gray-800">{{ __('Currencies') }}</div>
-                            <div class="text-gray-500">{{ $currencyCount }} {{ __('defined') }}</div>
+                            <div class="font-medium text-gray-800">{{ __('dashboard.currencies') }}</div>
+                            <div class="text-gray-500">{{ __('dashboard.currencies_defined', ['count' => $currencyCount]) }}</div>
                         </a>
                         <a href="{{ route('admin.exchange-rates') }}" class="block p-3 rounded border border-gray-200 hover:bg-gray-50">
-                            <div class="font-medium text-gray-800">{{ __('Exchange rates') }}</div>
-                            <div class="text-gray-500">{{ __('Latest') }}: {{ $latestRateDate ?? '—' }}</div>
+                            <div class="font-medium text-gray-800">{{ __('dashboard.exchange_rates') }}</div>
+                            <div class="text-gray-500">{{ __('dashboard.latest_rate', ['date' => $latestRateDate ?? '—']) }}</div>
                         </a>
                         <a href="{{ route('users.index') }}" class="block p-3 rounded border border-gray-200 hover:bg-gray-50">
-                            <div class="font-medium text-gray-800">{{ __('Users') }}</div>
-                            <div class="text-gray-500">{{ $userCount }} {{ __('accounts') }}</div>
+                            <div class="font-medium text-gray-800">{{ __('dashboard.users') }}</div>
+                            <div class="text-gray-500">{{ __('dashboard.user_accounts', ['count' => $userCount]) }}</div>
                         </a>
                         <a href="{{ route('profile.edit') }}" class="block p-3 rounded border border-gray-200 hover:bg-gray-50">
-                            <div class="font-medium text-gray-800">{{ __('My profile') }}</div>
-                            <div class="text-gray-500">{{ __('Name, password, delete account') }}</div>
+                            <div class="font-medium text-gray-800">{{ __('dashboard.my_profile') }}</div>
+                            <div class="text-gray-500">{{ __('dashboard.profile_hint') }}</div>
                         </a>
                     </div>
 
                     <p class="text-xs text-gray-500">
-                        {{ __('BNR rates are fetched daily at 14:30 by the scheduler') }}
+                        {{ __('dashboard.bnr_note') }}
                         (<code class="font-mono">php artisan rates:fetch-bnr</code>).
                     </p>
                 </section>

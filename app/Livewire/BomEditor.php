@@ -224,7 +224,7 @@ class BomEditor extends Component
 
         $this->hydrateState();
 
-        session()->flash('status', 'BOM saved successfully.');
+        session()->flash('status', __('bom.saved'));
     }
 
     public function render()

@@ -1,0 +1,37 @@
+<?php
+
+return [
+
+    'intro'              => 'Pagină de test — toate ecranele aplicației sunt accesibile de aici.',
+    'total'              => ':count în total',
+    'production_orders'  => 'Comenzi de producție',
+    'new_order'          => 'Comandă nouă',
+    'all_orders'         => 'Toate comenzile',
+    'recent'             => 'Recente',
+    'no_orders'          => 'Nu există încă comenzi.',
+    'boms_costing'       => 'BOM-uri și costuri',
+    'bom_count'          => ':count BOM-uri',
+    'pick_finished'      => 'Alegeți un produs finit → BOM',
+    'empty_bom_note'     => 'Deschiderea editorului BOM pentru un produs finit fără BOM creează unul gol.',
+    'finished_product'   => 'Produs finit',
+    'jumbo'              => 'Jumbo',
+    'items'              => 'Componente',
+    'cost_editor'        => 'Editor costuri',
+    'legacy_items'       => 'Componente (vechi)',
+    'legacy_items_hint'  => 'Editorul vechi de componente, fără costuri',
+    'no_boms'            => 'Nu există încă BOM-uri.',
+    'materials'          => 'Materiale',
+    'all_materials'      => 'Toate materialele',
+    'pricing_admin'      => 'Prețuri și administrare',
+    'currencies'         => 'Monede',
+    'currencies_defined' => ':count definite',
+    'exchange_rates'     => 'Cursuri de schimb',
+    'latest_rate'        => 'Ultimul: :date',
+    'users'              => 'Utilizatori',
+    'user_accounts'      => ':count conturi',
+    'my_profile'         => 'Profilul meu',
+    'profile_hint'       => 'Nume, parolă, ștergere cont',
+    'bnr_note'           => 'Cursurile BNR sunt preluate zilnic la 14:30 de planificator',
+    'server_time'        => 'Ora serverului: :time',
+
+];

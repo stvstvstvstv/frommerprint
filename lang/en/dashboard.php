@@ -1,0 +1,37 @@
+<?php
+
+return [
+
+    'intro'              => 'Testing hub — every screen in the app is reachable from here.',
+    'total'              => ':count total',
+    'production_orders'  => 'Production orders',
+    'new_order'          => 'New order',
+    'all_orders'         => 'All orders',
+    'recent'             => 'Recent',
+    'no_orders'          => 'No orders yet.',
+    'boms_costing'       => 'BOMs & costing',
+    'bom_count'          => ':count BOMs',
+    'pick_finished'      => 'Pick a finished product → BOM',
+    'empty_bom_note'     => 'Opening the BOM editor for a finished product with no BOM creates an empty one.',
+    'finished_product'   => 'Finished product',
+    'jumbo'              => 'Jumbo',
+    'items'              => 'Items',
+    'cost_editor'        => 'Cost editor',
+    'legacy_items'       => 'Items (legacy)',
+    'legacy_items_hint'  => 'Older structure-only item editor',
+    'no_boms'            => 'No BOMs yet.',
+    'materials'          => 'Materials',
+    'all_materials'      => 'All materials',
+    'pricing_admin'      => 'Pricing & admin',
+    'currencies'         => 'Currencies',
+    'currencies_defined' => ':count defined',
+    'exchange_rates'     => 'Exchange rates',
+    'latest_rate'        => 'Latest: :date',
+    'users'              => 'Users',
+    'user_accounts'      => ':count accounts',
+    'my_profile'         => 'My profile',
+    'profile_hint'       => 'Name, password, delete account',
+    'bnr_note'           => 'BNR rates are fetched daily at 14:30 by the scheduler',
+    'server_time'        => 'Server time: :time',
+
+];

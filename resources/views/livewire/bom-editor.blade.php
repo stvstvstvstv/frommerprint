@@ -9,33 +9,33 @@
     {{-- Header --}}
     <div class="bg-white p-4 rounded shadow">
         <h2 class="text-lg font-semibold">
-            BOM: {{ $bom->finishedMaterial->name }}
+            {{ __('bom.title', ['name' => $bom->finishedMaterial->name]) }}
         </h2>
         <div class="mt-1 text-sm text-gray-500 space-x-4">
-            <span>Code: <span class="font-mono">{{ $bom->finishedMaterial->code ?? '—' }}</span></span>
-            <span> / SAGA ID: <span class="font-mono">{{ $bom->finishedMaterial->saga_id ?? '—' }}</span></span>
+            <span>{{ __('bom.code') }}: <span class="font-mono">{{ $bom->finishedMaterial->code ?? '—' }}</span></span>
+            <span> / {{ __('bom.saga_id') }}: <span class="font-mono">{{ $bom->finishedMaterial->saga_id ?? '—' }}</span></span>
         </div>
         <div class="mt-1 text-sm text-gray-500 space-x-4">
-            <span>Width: {{ $bom->finishedMaterial->width ?? '—' }} mm</span>
-            <span>Length: {{ $bom->finishedMaterial->length ?? '—' }} m</span>
-            <span>Setup: {{ $bom->setup_time_minutes }} min</span>
+            <span>{{ __('bom.width') }}: {{ $bom->finishedMaterial->width ?? '—' }} mm</span>
+            <span>{{ __('bom.length') }}: {{ $bom->finishedMaterial->length ?? '—' }} m</span>
+            <span>{{ __('bom.setup') }}: {{ $bom->setup_time_minutes }} min</span>
         </div>
     </div>
 
     {{-- Yield Rule --}}
     <div class="bg-white p-4 rounded shadow space-y-4">
-        <h3 class="font-semibold">Yield Rule</h3>
+        <h3 class="font-semibold">{{ __('bom.yield_rule') }}</h3>
 
         {{-- Jumbo --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Preferred Jumbo Roll</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.preferred_jumbo') }}</label>
                 <select
                     wire:model.live="yieldRule.preferred_jumbo_material_id"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
-                    <option value="">— select —</option>
+                    <option value="">{{ __('bom.select') }}</option>
                     @foreach ($jumboOptions as $m)
                         <option value="{{ $m['id'] }}">
                             {{ $m['name'] }}
@@ -53,17 +53,17 @@
             @if ($costPreview['breakdown']['paper'] ?? null)
                 @php $pb = $costPreview['breakdown']['paper']; @endphp
                 <div class="text-xs text-gray-500 flex items-end pb-1 space-x-3">
-                    <span>Rolls/shaft: <strong>{{ $pb['rolls_per_shaft'] }}</strong></span>
-                    <span>Shafts: <strong>{{ $pb['shafts'] }}</strong></span>
-                    <span>Net area: <strong>{{ $pb['net_area_m2'] }} m²</strong></span>
-                    <span>Price/m²: <strong>{{ number_format($pb['price_per_m2'], 4) }}</strong></span>
+                    <span>{{ __('bom.rolls_per_shaft') }}: <strong>{{ $pb['rolls_per_shaft'] }}</strong></span>
+                    <span>{{ __('bom.shafts') }}: <strong>{{ $pb['shafts'] }}</strong></span>
+                    <span>{{ __('bom.net_area') }}: <strong>{{ $pb['net_area_m2'] }} m²</strong></span>
+                    <span>{{ __('bom.price_per_m2') }}: <strong>{{ number_format($pb['price_per_m2'], 4) }}</strong></span>
                 </div>
             @endif
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Paper Waste %</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.paper_waste_pct') }}</label>
                 <input
                     type="number"
                     step="0.01"
@@ -79,20 +79,20 @@
         {{-- Ink --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Ink Material</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.ink_material') }}</label>
                 <select
                     wire:model.live="yieldRule.ink_material_id"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
-                    <option value="">— none —</option>
+                    <option value="">{{ __('bom.none') }}</option>
                     @foreach ($inkOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Ink kg / m²</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.ink_kg_m2') }}</label>
                 <input
                     type="number"
                     step="0.000001"
@@ -100,7 +100,7 @@
                     wire:model.live="yieldRule.ink_kg_per_m2"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
-                    placeholder="e.g. 0.003"
+                    placeholder="{{ __('bom.example', ['value' => '0.003']) }}"
                 >
             </div>
         </div>
@@ -108,13 +108,13 @@
         {{-- Tube --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Tube Material</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.tube_material') }}</label>
                 <select
                     wire:model.live="yieldRule.tube_material_id"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
-                    <option value="">— none —</option>
+                    <option value="">{{ __('bom.none') }}</option>
                     @foreach ($tubeOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
@@ -125,20 +125,20 @@
         {{-- Packaging --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Foil Wrap Material</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.foil_material') }}</label>
                 <select
                     wire:model.live="yieldRule.foil_material_id"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
-                    <option value="">— none —</option>
+                    <option value="">{{ __('bom.none') }}</option>
                     @foreach ($foilOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Rolls per Foil Wrap</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.rolls_per_foil') }}</label>
                 <input
                     type="number"
                     step="1"
@@ -146,27 +146,27 @@
                     wire:model.live="yieldRule.foil_per_roll"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
-                    placeholder="0 = no foil"
+                    placeholder="{{ __('bom.no_foil') }}"
                 >
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Box Material</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.box_material') }}</label>
                 <select
                     wire:model.live="yieldRule.box_material_id"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
                 >
-                    <option value="">— none —</option>
+                    <option value="">{{ __('bom.none') }}</option>
                     @foreach ($boxOptions as $m)
                         <option value="{{ $m['id'] }}">{{ $m['name'] }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Rolls per Box</label>
+                <label class="block text-xs text-gray-500 mb-1">{{ __('bom.rolls_per_box') }}</label>
                 <input
                     type="number"
                     step="1"
@@ -174,7 +174,7 @@
                     wire:model.live="yieldRule.rolls_per_box"
                     wire:change="recalculate"
                     class="w-full border rounded px-2 py-1 text-sm"
-                    placeholder="e.g. 200"
+                    placeholder="{{ __('bom.example', ['value' => '200']) }}"
                 >
             </div>
         </div>
@@ -183,20 +183,20 @@
     {{-- Non-geometric BOM items (machine, graphic, other) --}}
     @if (count($items) > 0)
         <div class="bg-white p-4 rounded shadow">
-            <h3 class="font-semibold mb-2">Other Components</h3>
+            <h3 class="font-semibold mb-2">{{ __('bom.other_components') }}</h3>
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-gray-500 text-xs">
-                        <th>Material</th>
-                        <th>Role</th>
-                        <th class="w-36">Qty / roll</th>
+                        <th>{{ __('bom.material') }}</th>
+                        <th>{{ __('bom.role') }}</th>
+                        <th class="w-36">{{ __('bom.qty_per_roll') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($items as $i => $item)
                         <tr class="border-t">
                             <td class="py-1">{{ $item['material_name'] }}</td>
-                            <td class="py-1 text-gray-500 text-xs">{{ $item['role'] }}</td>
+                            <td class="py-1 text-gray-500 text-xs">{{ __('bom.roles.' . $item['role']) }}</td>
                             <td class="py-1">
                                 <input
                                     type="number"
@@ -216,9 +216,9 @@
     {{-- Cost Preview --}}
     <div class="bg-gray-50 p-4 rounded shadow space-y-4">
         <div class="flex items-center justify-between">
-            <h3 class="font-semibold">Cost Preview</h3>
+            <h3 class="font-semibold">{{ __('bom.cost_preview') }}</h3>
             <div class="flex items-center gap-2 text-sm">
-                <label class="text-gray-500">Qty:</label>
+                <label class="text-gray-500">{{ __('bom.qty') }}:</label>
                 <input
                     type="number"
                     min="1"
@@ -233,17 +233,17 @@
         @if ($costPreview['breakdown']['paper'] ?? null)
             @php $p = $costPreview['breakdown']['paper']; @endphp
             <div>
-                <h4 class="font-semibold text-sm mb-1">Paper</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.paper') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <tbody>
-                        <tr><td class="text-gray-500 w-40">Jumbo</td><td>{{ $p['jumbo'] }}</td></tr>
-                        <tr><td class="text-gray-500">Rolls per shaft</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
-                        <tr><td class="text-gray-500">Shafts</td><td>{{ $p['shafts'] }}</td></tr>
-                        <tr><td class="text-gray-500">Gross area</td><td>{{ $p['gross_area_m2'] }} m²</td></tr>
-                        <tr><td class="text-gray-500">Waste</td><td>{{ $p['waste_pct'] }} %</td></tr>
-                        <tr><td class="text-gray-500">Net area</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
-                        <tr><td class="text-gray-500">Price / m²</td><td>{{ number_format($p['price_per_m2'], 6) }}</td></tr>
-                        <tr class="font-semibold border-t"><td>Paper cost</td><td>{{ number_format($p['cost'], 4) }}</td></tr>
+                        <tr><td class="text-gray-500 w-40">{{ __('bom.jumbo') }}</td><td>{{ $p['jumbo'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.rolls_per_shaft') }}</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.shafts') }}</td><td>{{ $p['shafts'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.gross_area') }}</td><td>{{ $p['gross_area_m2'] }} m²</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.waste') }}</td><td>{{ $p['waste_pct'] }} %</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.net_area') }}</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.price_per_m2') }}</td><td>{{ number_format($p['price_per_m2'], 6) }}</td></tr>
+                        <tr class="font-semibold border-t"><td>{{ __('bom.paper_cost') }}</td><td>{{ number_format($p['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -253,15 +253,15 @@
         @if ($costPreview['breakdown']['ink'] ?? null)
             @php $ink = $costPreview['breakdown']['ink']; @endphp
             <div>
-                <h4 class="font-semibold text-sm mb-1">Ink</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.ink') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <tbody>
-                        <tr><td class="text-gray-500 w-40">Material</td><td>{{ $ink['material'] }}</td></tr>
-                        <tr><td class="text-gray-500">Roll area</td><td>{{ $ink['roll_area_m2'] }} m²</td></tr>
-                        <tr><td class="text-gray-500">kg / m²</td><td>{{ $ink['ink_kg_per_m2'] }}</td></tr>
-                        <tr><td class="text-gray-500">kg / roll</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
-                        <tr><td class="text-gray-500">Price / kg</td><td>{{ number_format($ink['unit_price'], 4) }}</td></tr>
-                        <tr class="font-semibold border-t"><td>Ink cost</td><td>{{ number_format($ink['cost'], 4) }}</td></tr>
+                        <tr><td class="text-gray-500 w-40">{{ __('bom.material') }}</td><td>{{ $ink['material'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.roll_area') }}</td><td>{{ $ink['roll_area_m2'] }} m²</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.kg_per_m2') }}</td><td>{{ $ink['ink_kg_per_m2'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.kg_per_roll') }}</td><td>{{ $ink['ink_kg_per_roll'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.price_per_kg') }}</td><td>{{ number_format($ink['unit_price'], 4) }}</td></tr>
+                        <tr class="font-semibold border-t"><td>{{ __('bom.ink_cost') }}</td><td>{{ number_format($ink['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -271,13 +271,13 @@
         @if ($costPreview['breakdown']['tube'] ?? null)
             @php $tube = $costPreview['breakdown']['tube']; @endphp
             <div>
-                <h4 class="font-semibold text-sm mb-1">Tube</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.tube') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <tbody>
-                        <tr><td class="text-gray-500 w-40">Material</td><td>{{ $tube['material'] }}</td></tr>
-                        <tr><td class="text-gray-500">Qty</td><td>{{ number_format($tube['quantity']) }}</td></tr>
-                        <tr><td class="text-gray-500">Unit price</td><td>{{ number_format($tube['unit_price'], 4) }}</td></tr>
-                        <tr class="font-semibold border-t"><td>Tube cost</td><td>{{ number_format($tube['cost'], 4) }}</td></tr>
+                        <tr><td class="text-gray-500 w-40">{{ __('bom.material') }}</td><td>{{ $tube['material'] }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.qty') }}</td><td>{{ number_format($tube['quantity']) }}</td></tr>
+                        <tr><td class="text-gray-500">{{ __('bom.unit_price') }}</td><td>{{ number_format($tube['unit_price'], 4) }}</td></tr>
+                        <tr class="font-semibold border-t"><td>{{ __('bom.tube_cost') }}</td><td>{{ number_format($tube['cost'], 4) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -286,14 +286,14 @@
         {{-- Machine --}}
         @if (count($costPreview['breakdown']['machine'] ?? []) > 0)
             <div>
-                <h4 class="font-semibold text-sm mb-1">Machine</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.machine') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <thead class="text-gray-500">
                         <tr>
-                            <th class="text-left">Machine</th>
-                            <th class="text-right">Time (h)</th>
-                            <th class="text-right">Rate / h</th>
-                            <th class="text-right">Cost</th>
+                            <th class="text-left">{{ __('bom.machine') }}</th>
+                            <th class="text-right">{{ __('bom.time_h') }}</th>
+                            <th class="text-right">{{ __('bom.rate_per_h') }}</th>
+                            <th class="text-right">{{ __('bom.cost') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -318,22 +318,22 @@
         {{-- Other components --}}
         @if (count($costPreview['breakdown']['components'] ?? []) > 0)
             <div>
-                <h4 class="font-semibold text-sm mb-1">Other Components</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.other_components') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <thead class="text-gray-500">
                         <tr>
-                            <th class="text-left">Material</th>
-                            <th class="text-left">Role</th>
-                            <th class="text-right">Qty</th>
-                            <th class="text-right">Unit price</th>
-                            <th class="text-right">Cost</th>
+                            <th class="text-left">{{ __('bom.material') }}</th>
+                            <th class="text-left">{{ __('bom.role') }}</th>
+                            <th class="text-right">{{ __('bom.qty') }}</th>
+                            <th class="text-right">{{ __('bom.unit_price') }}</th>
+                            <th class="text-right">{{ __('bom.cost') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($costPreview['breakdown']['components'] as $row)
                             <tr class="border-t">
                                 <td>{{ $row['material'] }}</td>
-                                <td>{{ $row['role'] }}</td>
+                                <td>{{ __('bom.roles.' . $row['role']) }}</td>
                                 <td class="text-right">{{ number_format($row['quantity'], 4) }}</td>
                                 <td class="text-right">{{ number_format($row['unit_price'], 4) }}</td>
                                 <td class="text-right">{{ number_format($row['cost'], 4) }}</td>
@@ -347,21 +347,21 @@
         {{-- Setup --}}
         @if (($costPreview['breakdown']['setup'] ?? 0) > 0)
             <div class="text-sm">
-                Setup cost: <strong>{{ number_format($costPreview['breakdown']['setup'], 4) }}</strong>
+                {{ __('bom.setup_cost') }}: <strong>{{ number_format($costPreview['breakdown']['setup'], 4) }}</strong>
             </div>
         @endif
 
         {{-- Packaging --}}
         @if (count($costPreview['breakdown']['packaging'] ?? []) > 0)
             <div>
-                <h4 class="font-semibold text-sm mb-1">Packaging</h4>
+                <h4 class="font-semibold text-sm mb-1">{{ __('bom.packaging') }}</h4>
                 <table class="w-full text-xs border-collapse">
                     <thead class="text-gray-500">
                         <tr>
-                            <th class="text-left">Material</th>
-                            <th class="text-right">Qty</th>
-                            <th class="text-right">Unit price</th>
-                            <th class="text-right">Cost</th>
+                            <th class="text-left">{{ __('bom.material') }}</th>
+                            <th class="text-right">{{ __('bom.qty') }}</th>
+                            <th class="text-right">{{ __('bom.unit_price') }}</th>
+                            <th class="text-right">{{ __('bom.cost') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -380,18 +380,18 @@
 
         {{-- Totals --}}
         <div class="border-t pt-2 space-y-1 text-sm">
-            <div><strong>Unit cost:</strong> {{ number_format($costPreview['unit_cost'] ?? 0, 4) }}</div>
-            <div><strong>Total ({{ $previewQuantity }} rolls):</strong> {{ number_format($costPreview['total_cost'] ?? 0, 2) }}</div>
+            <div><strong>{{ __('bom.unit_cost') }}:</strong> {{ number_format($costPreview['unit_cost'] ?? 0, 4) }}</div>
+            <div><strong>{{ __('bom.total_rolls', ['count' => $previewQuantity]) }}:</strong> {{ number_format($costPreview['total_cost'] ?? 0, 2) }}</div>
         </div>
     </div>
 
     <div class="flex items-center justify-between mt-6">
-        <div class="text-xs text-gray-500">Changes are not saved automatically.</div>
+        <div class="text-xs text-gray-500">{{ __('bom.not_autosaved') }}</div>
         <button
             wire:click="save"
             class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-            Save BOM
+            {{ __('bom.save') }}
         </button>
     </div>
 
