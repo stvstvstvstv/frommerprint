@@ -1,0 +1,58 @@
+<?php
+
+return [
+    'title' => 'Materiale',
+
+    'add' => 'Adaugă material',
+    'edit' => 'Editează material',
+    'cost' => 'Cost',
+    'price' => 'Preț',
+    'printed' => 'Tipar',
+
+    'fields' => [
+        'dimensions' => 'Dimensiuni',
+        'code' => 'Cod SmartBill',
+        'sagaid' => 'ID SAGA',
+        'name' => 'Denumire',
+        'type' => 'Tip',
+        'unit' => 'UM',
+        'active' => 'Activ',
+        'width' => 'Lățime (mm)',
+        'length' => 'Lungime (m)',
+        'diameter' => 'Diametru (mm)',
+        'gsm' => 'GSM',
+        'price' => 'Preț',
+        'currency' => 'Monedă',
+        'pricing_per' => 'Per',
+        'pricing_unit' => 'UM preț',
+    ],
+
+    'types' => [
+        'raw' => 'Primă',
+        'finished' => 'Finit',
+        'packaging' => 'Ambalaj',
+        'box' => 'Cutie',
+        'jumbo' => 'Jumbo',
+        'paper' => 'Hârtie',
+        'ink' => 'Cerneală',
+        'glue' => 'Adeziv',
+        'foil' => 'Folie',
+        'machine' => 'Mașină',
+        'tube' => 'Tub',
+        'label' => 'Etichetă',
+        'other' => 'Altul',
+    ],
+
+    'search_placeholder' => 'Caută cod sau denumire…',
+    'selecttoview' => 'Selectați un material pentru a vedea detalii',
+
+    'confirm_delete_title' => 'Șterge material?',
+    'confirm_delete_body'  => 'Această acțiune nu poate fi anulată.',
+
+    'empty' => 'Nu există materiale.',
+
+    'edit_bom' => 'Editează BOM',
+
+    'unsaved_save'    => 'Aveți modificări nesalvate. Le salvați mai întâi?',
+    'unsaved_discard' => 'Renunțați la modificări și continuați?',
+];
