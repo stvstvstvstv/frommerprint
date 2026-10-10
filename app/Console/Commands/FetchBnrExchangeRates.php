@@ -36,14 +36,32 @@ class FetchBnrExchangeRates extends Command
 
         $rateDate = Carbon::parse((string) $cube['date'])->toDateString();
 
-        // Idempotency: do nothing if already imported
-        if (ExchangeRate::where('rate_date', $rateDate)->exists()) {
-            $this->info("Exchange rates already exist for {$rateDate}");
-            return self::SUCCESS;
-        }
-
         // Load all currencies, indexed by code
         $currencies = Currency::all()->keyBy('code');
+
+        // Idempotency per currency: keep any rate that already exists for
+        // this date (e.g. entered by hand) and only add the missing ones.
+        $existing = ExchangeRate::where('rate_date', $rateDate)
+            ->pluck('currency_id')
+            ->flip();
+
+        $imported = [];
+        $skipped  = [];
+
+        $store = function (Currency $currency, float $rate) use ($rateDate, $existing, &$imported, &$skipped) {
+            if ($existing->has($currency->id)) {
+                $skipped[] = $currency->code;
+                return;
+            }
+
+            ExchangeRate::create([
+                'currency_id'  => $currency->id,
+                'rate_date'    => $rateDate,
+                'rate_to_base' => $rate,
+            ]);
+
+            $imported[] = $currency->code;
+        };
 
         // 1️⃣ Always insert base currency (RON)
         $baseCurrency = $currencies->get('RON');
@@ -53,11 +71,7 @@ class FetchBnrExchangeRates extends Command
             return self::FAILURE;
         }
 
-        ExchangeRate::create([
-            'currency_id'  => $baseCurrency->id,   // should be 1
-            'rate_date'    => $rateDate,
-            'rate_to_base' => 1.000000,
-        ]);
+        $store($baseCurrency, 1.0);
 
         // 2️⃣ Process all rates published by BNR
         foreach ($cube->Rate as $rateNode) {
@@ -74,14 +88,15 @@ class FetchBnrExchangeRates extends Command
             // Normalize (BNR publishes e.g. HUF per 100 units)
             $normalizedRate = $value / $multiplier;
 
-            ExchangeRate::create([
-                'currency_id'  => $currencies[$code]->id,
-                'rate_date'    => $rateDate,
-                'rate_to_base' => $normalizedRate,
-            ]);
+            $store($currencies[$code], $normalizedRate);
         }
 
-        $this->info("BNR exchange rates imported for {$rateDate}");
+        $this->info(sprintf(
+            'BNR exchange rates for %s: imported %s; already present, skipped %s',
+            $rateDate,
+            $imported ? implode(', ', $imported) : 'none',
+            $skipped ? implode(', ', $skipped) : 'none',
+        ));
 
         return self::SUCCESS;
     }
