@@ -70,6 +70,24 @@ These are entered manually with a quantity-per-roll:
 
 ---
 
+## Prices
+
+Every material price is normalised before it is used, by `BomCostCalculator::unitCost()`:
+
+```
+unit_cost = price / pricing_per                      (e.g. 25 RON per 10 packs = 2.50 per pack)
+unit_cost_RON = unit_cost × rate_to_base             (latest exchange rate on or before the costing date)
+```
+
+- All costs and totals are in the base currency (`config('currency.base')`, RON).
+- The costing date is today for previews, and the start date when an order moves to In Production.
+- The pricing unit is what one `unit_cost` buys: m² for jumbo, kg for ink, hour for machines, piece/pack for tube, foil and box.
+- **Ink must be priced per kg**, because ink consumption is entered in kg/m².
+
+A material that can't be priced (no price, no exchange rate on or before the costing date, or ink not priced per kg) is left out of the total and listed under `problems` in the result. The screens show these as a red warning, and an order with problems can't be started.
+
+---
+
 ## Consumption Calculations
 
 All calculations are performed by `App\Services\BomCostCalculator` for a given order of `N` planned rolls.
@@ -97,9 +115,9 @@ cost            = net_area_m² × jumbo_price_per_m²
 ```
 rolls_per_shaft = floor(1410 / 57)  = 24
 shafts_needed   = ceil(1000 / 24)   = 42
-gross_area_m²   = 42 × 1.410 × 30  = 1 774.8 m²
-net_area_m²     = 1 774.8 × 1.01   = 1 792.5 m²
-cost            = 1 792.5 × 1.20   = 2 151.0 RON
+gross_area_m²   = 42 × 1.410 × 30  = 1 776.6 m²
+net_area_m²     = 1 776.6 × 1.01   = 1 794.4 m²
+cost            = 1 794.4 × 1.20   = 2 153.2 RON
 ```
 
 Note: any leftover capacity on the last shaft pass is wasted — this is a natural production reality, not a bug.
@@ -241,5 +259,4 @@ The jumbo selection on the production order also overrides the `preferred_jumbo_
 The following are **not** handled by the current system and would need extension if required:
 
 - **Multi-colour ink** — only a single ink material and a single `kg/m²` coefficient. Multiple colours must be combined into one coefficient.
-- **Currency conversion** — all material prices are used as-is in the `price` field. If materials are priced in different currencies, those prices must be maintained in RON (base currency) manually or kept consistent via exchange rate updates.
 - **Actual vs planned quantity variance** — the system costs at `planned_rolls`. If actual output differs, there is no mechanism to record or reconcile the difference.

@@ -155,6 +155,7 @@
                     → {{ __('orders.statuses.in_production') }}
                 </button>
             </div>
+            @error('pricing') <p class="text-red-600 text-xs text-right">{{ $message }}</p> @enderror
         </div>
 
         {{-- ---------------------------------------------------------------- --}}
@@ -171,6 +172,8 @@
                 <p class="text-sm text-gray-400 italic">{{ __('orders.form.preview_hint_edit') }}</p>
             @else
 
+                <x-cost-problems :problems="$costPreview['problems'] ?? []" />
+
                 {{-- Paper --}}
                 @if ($costPreview['breakdown']['paper']['error'] ?? null)
                     <x-paper-cost-problem :paper="$costPreview['breakdown']['paper']" />
@@ -184,7 +187,7 @@
                                 <tr><td class="text-gray-500">{{ __('orders.form.rolls_per_shaft') }}</td><td>{{ $p['rolls_per_shaft'] }}</td></tr>
                                 <tr><td class="text-gray-500">{{ __('orders.form.shafts') }}</td><td>{{ $p['shafts'] }}</td></tr>
                                 <tr><td class="text-gray-500">{{ __('orders.form.net_area') }}</td><td>{{ $p['net_area_m2'] }} m²</td></tr>
-                                <tr><td class="text-gray-500">{{ __('orders.form.price_per_m2') }}</td><td>{{ number_format($p['price_per_m2'], 4) }}</td></tr>
+                                <tr><td class="text-gray-500">{{ __('orders.form.price_per_m2') }}</td><td>{{ ($p['price_per_m2'] === null ? '—' : number_format($p['price_per_m2'], 4)) }}</td></tr>
                                 <tr class="font-semibold border-t"><td>{{ __('orders.form.paper_cost') }}</td><td>{{ number_format($p['cost'], 2) }}</td></tr>
                             </tbody>
                         </table>
@@ -243,6 +246,10 @@
                         </table>
                     </div>
                 @endif
+
+                @isset($costPreview['currency'])
+                    <p class="text-xs text-gray-400">{{ __('bom.currency_note', ['currency' => $costPreview['currency'], 'date' => $costPreview['price_date']]) }}</p>
+                @endisset
 
                 {{-- Totals --}}
                 <div class="border-t pt-3 space-y-1">

@@ -68,6 +68,16 @@ return [
         'jumbo_width'     => 'jumbo width',
     ],
 
+    'currency_note' => 'All costs in :currency, using exchange rates on or before :date.',
+
+    'problems' => [
+        'heading'            => 'Some materials can\'t be priced and are not included in the total:',
+        'missing_price'      => ':material has no price.',
+        'missing_rate'       => ':material is priced in :currency, but there is no :currency exchange rate on or before :date.',
+        'wrong_pricing_unit' => ':material is priced per :unit but must be priced per :required.',
+        'fix'                => 'Fix this on the Materials screen.',
+    ],
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Paper',

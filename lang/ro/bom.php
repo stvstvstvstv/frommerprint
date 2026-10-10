@@ -68,6 +68,16 @@ return [
         'jumbo_width'     => 'lățimea rolei jumbo',
     ],
 
+    'currency_note' => 'Toate costurile în :currency, la cursurile de schimb de la sau înainte de :date.',
+
+    'problems' => [
+        'heading'            => 'Unele materiale nu pot fi evaluate și nu sunt incluse în total:',
+        'missing_price'      => ':material nu are preț.',
+        'missing_rate'       => ':material are prețul în :currency, dar nu există un curs :currency la sau înainte de :date.',
+        'wrong_pricing_unit' => ':material are prețul per :unit, dar trebuie să aibă prețul per :required.',
+        'fix'                => 'Corectați acest lucru în ecranul Materiale.',
+    ],
+
     'roles' => [
         'jumbo'   => 'Jumbo',
         'paper'   => 'Hârtie',

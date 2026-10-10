@@ -267,6 +267,15 @@ class ProductionOrderEdit extends Component
         $jumbo    = Material::findOrFail($this->jumboMaterialId);
         $this->ensurePaperCostable($finished, $jumbo);
 
+        // Freeze a freshly calculated cost, not whatever the preview last showed
+        $this->recalculate();
+
+        if ($this->costPreview['problems'] ?? []) {
+            throw ValidationException::withMessages([
+                'pricing' => ProductionOrder::unpricedMessage($this->costPreview['problems']),
+            ]);
+        }
+
         $this->order->update([
             'finished_material_id'       => $finished->id,
             'jumbo_material_id'          => $jumbo->id,

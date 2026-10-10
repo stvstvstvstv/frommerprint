@@ -83,6 +83,7 @@ return [
 
     'jumbo_too_narrow' => 'The jumbo (:jumbo_width mm) is narrower than the finished roll (:finished_width mm). Choose a wider jumbo.',
     'missing_dimensions' => 'Missing: :fields. Add the values on the Materials screen first.',
+    'unpriced_materials' => 'Some materials can\'t be priced: :materials. Fix their prices on the Materials screen first.',
     'cannot_start'     => 'Order #:id cannot be started.',
 
     'statuses' => [

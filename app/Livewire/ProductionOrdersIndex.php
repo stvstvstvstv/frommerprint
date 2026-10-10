@@ -40,11 +40,16 @@ class ProductionOrdersIndex extends Component
             return;
         }
 
-        $totalCost = $this->computeCost($order);
+        $cost = $this->computeCost($order);
+
+        if ($cost['problems'] ?? []) {
+            session()->flash('error', __('orders.cannot_start', ['id' => $id]) . ' ' . ProductionOrder::unpricedMessage($cost['problems']));
+            return;
+        }
 
         $order->update([
             'status'               => ProductionOrder::STATUS_IN_PRODUCTION,
-            'confirmed_total_cost' => $totalCost,
+            'confirmed_total_cost' => $cost['total_cost'],
             'started_at'           => now(),
         ]);
 
@@ -80,13 +85,13 @@ class ProductionOrdersIndex extends Component
 
     // -------------------------------------------------------------------------
 
-    private function computeCost(ProductionOrder $order): float
+    private function computeCost(ProductionOrder $order): array
     {
         $finished = Material::find($order->finished_material_id);
         $jumbo    = Material::find($order->jumbo_material_id);
 
         if (! $finished || ! $jumbo) {
-            return 0.0;
+            return ['total_cost' => 0.0, 'problems' => []];
         }
 
         $bom = Bom::with(['items.componentMaterial', 'yieldRule'])
@@ -122,7 +127,7 @@ class ProductionOrdersIndex extends Component
 
         $bom->setRelation('yieldRule', $yieldRule);
 
-        return (new BomCostCalculator($bom, $order->planned_rolls))->calculate()['total_cost'];
+        return (new BomCostCalculator($bom, $order->planned_rolls))->calculate();
     }
 
     public function render()
