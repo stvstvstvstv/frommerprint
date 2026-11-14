@@ -107,7 +107,9 @@ class ProductionOrdersIndex extends Component
 
         $yieldRule = $bom->yieldRule ?? new BomYieldRule();
         $yieldRule->preferred_jumbo_material_id = $jumbo->id;
-        if ($order->override_ink_kg_per_m2)  $yieldRule->ink_kg_per_m2  = $order->override_ink_kg_per_m2;
+        // The order's values replace the BOM's, as in the create/edit preview:
+        // an empty ink field means no ink, not "fall back to the BOM"
+        $yieldRule->ink_kg_per_m2 = $order->override_ink_kg_per_m2;
         $yieldRule->foil_per_roll = $order->override_foil_per_roll;
         $yieldRule->rolls_per_box = $order->override_rolls_per_box;
 
