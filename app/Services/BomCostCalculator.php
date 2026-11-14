@@ -26,6 +26,9 @@ class BomCostCalculator
     // Ink consumption is entered in kg/m², so ink must be priced per kg.
     public const INK_PRICING_UNIT = 'kg';
 
+    // Paper area is worked out in m², so jumbo must be priced per m².
+    public const JUMBO_PRICING_UNIT = 'sqm';
+
     protected Bom $bom;
     protected int $quantity;
     protected CurrencyConverter $converter;
@@ -186,8 +189,7 @@ class BomCostCalculator
         $wastePct    = (float) ($yieldRule->paper_waste_pct ?? 1.0);
         $netAreaM2   = $grossAreaM2 * (1 + $wastePct / 100);
 
-        // Jumbo is priced per m²
-        $pricePerM2  = $this->unitCost($jumbo);
+        $pricePerM2  = $this->unitCost($jumbo, self::JUMBO_PRICING_UNIT);
         $cost        = $netAreaM2 * ($pricePerM2 ?? 0.0);
 
         return [
