@@ -188,6 +188,19 @@ class BomCostCalculatorTest extends TestCase
         $this->assertSame('kg', $result['problems'][0]['required']);
     }
 
+    public function test_jumbo_not_priced_per_m2_is_reported_and_left_out(): void
+    {
+        $jumbo = $this->material('jumbo', ['width' => 1410, 'price' => 6, 'pricing_unit' => 'kg']);
+        $bom   = $this->bom(['preferred_jumbo_material_id' => $jumbo->id]);
+
+        $result = $this->calculate($bom, 1000);
+
+        $this->assertEqualsWithDelta(0.0, $result['total_cost'], 0.0001);
+        $this->assertSame('wrong_pricing_unit', $result['problems'][0]['code']);
+        $this->assertSame('kg', $result['problems'][0]['unit']);
+        $this->assertSame('sqm', $result['problems'][0]['required']);
+    }
+
     public function test_missing_price_is_reported(): void
     {
         $tube = $this->material('tube', ['price' => null]);
